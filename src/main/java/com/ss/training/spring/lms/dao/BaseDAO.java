@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.training.spring.lms.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

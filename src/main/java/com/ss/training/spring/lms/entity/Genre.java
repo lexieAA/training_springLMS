@@ -1,4 +1,4 @@
-package com.ss.lms.entity;
+package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
 

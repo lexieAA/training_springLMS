@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.training.spring.lms.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ss.lms.entity.Publisher;
+import com.ss.training.spring.lms.entity.Publisher;
 
 public class PublisherDAO extends BaseDAO<Publisher>{
 

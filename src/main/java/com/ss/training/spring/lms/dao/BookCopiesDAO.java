@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.training.spring.lms.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ss.lms.entity.BookCopies;
+import com.ss.training.spring.lms.entity.BookCopies;
 
 public class BookCopiesDAO extends BaseDAO<BookCopies>{
 

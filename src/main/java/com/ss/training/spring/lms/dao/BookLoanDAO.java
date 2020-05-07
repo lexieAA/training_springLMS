@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.training.spring.lms.dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ss.lms.entity.BookLoan;
-import com.ss.lms.entity.Borrower;
+import com.ss.training.spring.lms.entity.BookLoan;
+import com.ss.training.spring.lms.entity.Borrower;
 
 public class BookLoanDAO extends BaseDAO<BookLoan>{
 
