@@ -19,7 +19,7 @@ public class ConnectionUtil {
 	public Connection getConnection() {
 		Connection conn = null;
 		Properties prop = new Properties();
-		try (InputStream input = new FileInputStream("resources/config/lms.properties")) {
+		try (InputStream input = new FileInputStream("src/main/resources/lms.properties")) {
 			prop.load(input);
 		} catch (Exception e) {
 			e.printStackTrace();
