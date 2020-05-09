@@ -15,11 +15,11 @@ public class GenreDAO extends BaseDAO<Genre> {
 	}
 
 	public Integer addGenre(Genre genre) throws ClassNotFoundException, SQLException {
-		return saveWithPK("INSERT INTO tbl_book_genres (genreName) VALUES (?)", new Object[] { genre.getGenreName() });
+		return saveWithPK("INSERT INTO tbl_genre (genre_name) VALUES (?)", new Object[] { genre.getGenreName() });
 	}
 
-	public void updateGenre(Genre genre) throws ClassNotFoundException, SQLException {
-		save("UPDATE tbl_book_genres SET genreName = ? WHERE genreId = ?",
+	public void updateGenre(Genre genre) throws SQLException, ClassNotFoundException {
+		save("UPDATE tbl_genre SET genre_name=? WHERE genre_id=?",
 				new Object[] { genre.getGenreName(), genre.getGenreId() });
 	}
 
@@ -30,7 +30,7 @@ public class GenreDAO extends BaseDAO<Genre> {
 	public List<Genre> readAllGenres() throws ClassNotFoundException, SQLException {
 		return read("SELECT * FROM tbl_genre", null);
 	}
-
+	
 	/**
 	 * Returns a list of genres identified by genreId; exactly one genre should be
 	 * returned in the List since genreId is a unique key value

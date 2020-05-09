@@ -15,7 +15,7 @@ public class PublisherDAO extends BaseDAO<Publisher>{
 	}
 
 	public Integer addPublisher(Publisher publisher) throws ClassNotFoundException, SQLException{
-		return saveWithPK("INSERT INTO tbl_publisher (publisherName, publisherAddress, publisherPhone) VALUES (?)", 
+		return saveWithPK("INSERT INTO tbl_publisher (publisherName, publisherAddress, publisherPhone) VALUES (?, ?, ?)", 
 				new Object[] {publisher.getPublisherName(), publisher.getPublisherAddress(), publisher.getPublisherPhone()});
 	}
 

@@ -249,11 +249,10 @@ public class AdminService {
 		return null;
 
 	}
-	
-	public void savePublisher(Publisher publisher) throws SQLException {
+
+	public Integer savePublisher(Publisher publisher) {
 
 		try {
-
 			// perform write operation depending on which object variables are set
 			// update case where both a key and name are given
 			if (publisher.getPublisherId() != null && publisher.getPublisherName() != null) {
@@ -262,25 +261,236 @@ public class AdminService {
 
 			// deletion case when an id is given but no name
 			else if (publisher.getPublisherId() != null) {
-//				blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
-//				bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
-//				bDAO.deleteBooksByPubId(publisher.getPublisherId());
-//				pDAO.deletePublisher(publisher);
-//				System.out.println("\nPublisher deleted");
+//					blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
+//					bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
+//					bDAO.deleteBooksByPubId(publisher.getPublisherId());
+//					pDAO.deletePublisher(publisher);
+//					System.out.println("\nPublisher deleted");
 			}
 
 			// insertion case otherwise
 			else {
-//				pDAO.addPublisher(publisher);
-//				System.out.println("Adding " + publisher.getPublisherName() + " to publishers");
+				Integer key = pDAO.addPublisher(publisher);
+				pDAO.conn.commit();
+
+				System.out.println("Adding " + publisher.getPublisherName() + " to publishers with key " + key);
+
+				return key;
 			}
-			
+
 			// commit transaction and display success message
 			pDAO.conn.commit();
-		} catch (SQLException e) {
-			System.out.println("There is a problem with the SQL in AdminService.readBooks()");
-		} catch (ClassNotFoundException e) {
-			System.out.println("Class not found in AdminService.readBooks()");
+		} catch (Exception e) {
+			// transaction failed. Rollback changes made
+			System.out.println("Publisher transaction failed in AdminService");
+			try {
+				pDAO.conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Could not rollback transaction in AdminService");
+			}
+			return -1;
+		}
+		return 0;
+	}
+
+	public Integer saveBorrower(Borrower borrower) {
+
+		try {
+			// perform write operation depending on which object variables are set
+			// update case where both a key and name are given
+			if (borrower.getCardNo() != null && borrower.getBorrowerName() != null) {
+				borrDAO.updateBorrower(borrower);
+			}
+
+			// deletion case when an id is given but no name
+			else if (borrower.getCardNo() != null) {
+//				blDAO.deleteBookLoansByCardNo(borrower.getCardNo());
+//				borrDAO.deleteBorrower(borrower);
+//				System.out.println("\nBorrower deleted");
+			}
+
+			// insertion case otherwise
+			else {
+				Integer key = borrDAO.addBorrower(borrower);
+				borrDAO.conn.commit();
+
+				System.out.println("Adding " + borrower.getBorrowerName() + " to borrowers with key " + key);
+
+				return key;
+			}
+
+			// commit transaction and display success message
+			borrDAO.conn.commit();
+
+		} catch (Exception e) {
+			// transaction failed. Rollback changes made
+			System.out.println("Transaction failed in AdminService");
+			try {
+				borrDAO.conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Could not rollback transaction in AdminService");
+			}
+			return -1;
+		}
+		return 0;
+	}
+
+	public Integer saveGenre(Genre genre) {
+
+		try {
+			// perform write operation depending on which object variables are set
+			// update case where both a key and name are given
+			if (genre.getGenreId() != null && genre.getGenreName() != null) {
+				gDAO.updateGenre(genre);
+			}
+
+			// deletion case when an id is given but no name
+			else if (genre.getGenreId() != null) {
+//				gDAO.deleteGenre(genre);
+			}
+
+			// insertion case otherwise
+			else {
+				Integer key = gDAO.addGenre(genre);
+				gDAO.conn.commit();
+
+				System.out.println("Adding " + genre.getGenreName() + " to genres with key " + key);
+
+				return key;
+			}
+
+			// commit transaction and display success message
+			gDAO.conn.commit();
+		} catch (Exception e) {
+			// transaction failed. Rollback changes made
+			System.out.println("Transaction failed in AdminService");
+			try {
+				gDAO.conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Could not rollback transaction in AdminService");
+			}
+			return -1;
+		}
+		return 0;
+	}
+
+	public Integer saveBranch(LibraryBranch branch) {
+
+		try {
+
+			// perform write operation depending on which object variables are set
+			// update case where both a key and name are given
+			if (branch.getBranchId() != null && branch.getBranchName() != null) {
+				lbDAO.updateLibraryBranch(branch);
+				System.out.println("Updated Branch");
+			}
+
+			// deletion case when an id is given but no name
+			else if (branch.getBranchId() != null) {
+//				blDAO.deleteBookLoansByBranchId(branch.getBranchId());
+//				bcDAO.deleteBookCopiesByBranchId(branch.getBranchId());
+//				brDAO.deleteBranch(branch);
+//				System.out.println("\nBranch deleted");
+			}
+
+			// insertion case otherwise
+			else {
+				Integer key = lbDAO.addLibraryBranch(branch);
+				lbDAO.conn.commit();
+
+				System.out.println("Adding " + branch.getBranchName() + " to library branches with key " + key);
+
+				return key;
+			}
+
+			// commit transaction and display success message
+			lbDAO.conn.commit();
+		} catch (Exception e) {
+			// transaction failed. Rollback changes made
+			System.out.println("Transaction failed in AdminService");
+			try {
+				lbDAO.conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Could not rollback transaction in AdminService");
+			}
+			return -1;
+		}
+		return 0;
+	}
+
+	public Integer saveAuthor(Author author) {
+
+		try {
+
+			// perform write operation depending on which object variables are set
+			// update case where both a key and name are given
+			if (author.getAuthorId() != null && author.getAuthorName() != null) {
+				aDAO.updateAuthor(author);
+			}
+
+			// deletion case when an id is given but no name
+			else if (author.getAuthorId() != null) {
+//				aDAO.deleteAuthor(author);
+			}
+
+			// insertion case otherwise
+			else {
+				Integer key = aDAO.addAuthor(author);
+				aDAO.conn.commit();
+
+				System.out.println("Adding " + author.getAuthorName() + " to authors with key " + key);
+
+				return key;
+			}
+
+			// commit transaction and display success message
+			aDAO.conn.commit();
+		} catch (Exception e) {
+			// transaction failed. Rollback changes made
+			System.out.println("Transaction failed in AdminService");
+			try {
+				aDAO.conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Could not rollback transaction in AdminService");
+			}
+			return -1;
+		}
+		return 0;
+	}
+
+	public void saveBook(Book book) throws SQLException {
+
+		try {
+
+			// perform write operation depending on which object variables are set
+			// update case where both a key and name are given
+			if (book.getBookId() != null && book.getTitle() != null) {
+				bDAO.updateBook(book);
+			}
+
+			// deletion case when an id is given but no name
+			else if (book.getBookId() != null) {
+
+//				bcDAO.deleteBookCopiesByBookId(book.getBookId());
+//
+//				bDAO.deleteBook(book);
+//				System.out.println("\nBook deleted");
+			}
+
+			// insertion case otherwise
+			else {
+//				bDAO.addBook(book);
+//				System.out.println("Adding " + book.getTitle() + " to books");
+			}
+
+			// commit transaction and display success message
+			bDAO.conn.commit();
+		} catch (ClassNotFoundException | SQLException e) {
+
+			// transaction failed. Rollback changes made
+			System.out.println("Book transaction failed in AdminService");
+			bDAO.conn.rollback();
 		}
 	}
+
 }

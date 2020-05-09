@@ -3,7 +3,6 @@ package com.ss.training.spring.lms.controller;
 import java.sql.SQLException;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +21,6 @@ import com.ss.training.spring.lms.entity.Genre;
 import com.ss.training.spring.lms.entity.LibraryBranch;
 import com.ss.training.spring.lms.entity.Publisher;
 import com.ss.training.spring.lms.service.AdminService;
-
 
 @RestController
 public class AdminController {
@@ -85,6 +83,48 @@ public class AdminController {
 		}
 	}
 
+	@RequestMapping(path = "/lms/admin/authors", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateAuthor(@RequestBody Author author) {
+
+		// read authors by author id
+		try {
+			adminService.saveAuthor(author);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param author passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/authors", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createAuthor(@RequestBody Author author) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new author if request object contains the necessary information
+		if (author != null && author.getAuthorId() == null && author.getAuthorName() != null) {
+			returnInt = adminService.saveAuthor(author);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
 	//
 	//
 	// PUBLISHER mappings ----------------------------------------------------------
@@ -139,19 +179,47 @@ public class AdminController {
 		}
 	}
 
-	
 	@RequestMapping(path = "/lms/admin/publishers", method = RequestMethod.PUT)
 	public ResponseEntity<String> updatePublisher(@RequestBody Publisher publisher) {
 
 		// read publishers by publisher id
 		try {
 			adminService.savePublisher(publisher);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param publisher passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/publishers", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createPublisher(@RequestBody Publisher publisher) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new publisher if request object contains the neccessary information
+		if (publisher != null && publisher.getPublisherId() == null && publisher.getPublisherName() != null
+				&& publisher.getPublisherAddress() != null && publisher.getPublisherPhone() != null) {
+			returnInt = adminService.savePublisher(publisher);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
 	}
 
 	//
@@ -208,6 +276,49 @@ public class AdminController {
 		}
 	}
 
+	@RequestMapping(path = "/lms/admin/borrowers", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateBorrower(@RequestBody Borrower borrower) {
+
+		// read borrowers by borrower id
+		try {
+			adminService.saveBorrower(borrower);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param borrower passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/borrowers", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createBorrower(@RequestBody Borrower borrower) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new borrower if request object contains the necessary information
+		if (borrower != null && borrower.getCardNo() == null && borrower.getBorrowerName() != null
+				&& borrower.getBorrowerAddress() != null && borrower.getBorrowerPhone() != null) {
+			returnInt = adminService.saveBorrower(borrower);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
 	//
 	//
 	// GENRE mappings ----------------------------------------------------------
@@ -259,6 +370,48 @@ public class AdminController {
 		} else {
 			// genre id not found, return 404 status
 			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@RequestMapping(path = "/lms/admin/genres", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateGenre(@RequestBody Genre genre) {
+
+		// read genres by genre id
+		try {
+			adminService.saveGenre(genre);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param genre passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/genres", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createGenre(@RequestBody Genre genre) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new genre if request object contains the neccessary information
+		if (genre != null && genre.getGenreId() == null && genre.getGenreName() != null) {
+			returnInt = adminService.saveGenre(genre);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
 
@@ -317,6 +470,49 @@ public class AdminController {
 		}
 	}
 
+	@RequestMapping(path = "/lms/admin/branches", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateBranch(@RequestBody LibraryBranch branch) {
+
+		// read branches by branch id
+		try {
+			adminService.saveBranch(branch);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param branch passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/branches", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createBranch(@RequestBody LibraryBranch branch) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new branch if request object contains the necessary information
+		if (branch != null && branch.getBranchId() == null && branch.getBranchName() != null
+				&& branch.getBranchAddress() != null) {
+			returnInt = adminService.saveBranch(branch);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
 	//
 	//
 	// BOOK mappings ----------------------------------------------------------
@@ -369,5 +565,18 @@ public class AdminController {
 			// branch id not found, return 404 status
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	@RequestMapping(path = "/lms/admin/books", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateBook(@RequestBody Book book) {
+
+		// read books by book id
+		try {
+			adminService.saveBook(book);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 }

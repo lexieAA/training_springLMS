@@ -16,7 +16,7 @@ public class BorrowerDAO extends BaseDAO<Borrower>{
 	}
 
 	public Integer addBorrower(Borrower borrower) throws ClassNotFoundException, SQLException{
-		return saveWithPK("INSERT INTO tbl_borrower (name, address, phone) VALUES (?)", 
+		return saveWithPK("INSERT INTO tbl_borrower (name, address, phone) VALUES (?, ?, ?)", 
 				new Object[] {borrower.getBorrowerName(), borrower.getBorrowerAddress(), borrower.getBorrowerPhone()});
 	}
 
