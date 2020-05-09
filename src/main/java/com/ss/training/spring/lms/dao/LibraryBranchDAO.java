@@ -32,6 +32,17 @@ public class LibraryBranchDAO extends BaseDAO<LibraryBranch>{
 	public List<LibraryBranch> readAllLibraryBranches() throws ClassNotFoundException, SQLException{
 		return read("SELECT * FROM tbl_library_branch", null);
 	}
+	
+	public List<LibraryBranch> readLibraryBranchById(Integer branchId) throws ClassNotFoundException, SQLException {
+		return read("SELECT * FROM tbl_library_branch WHERE branchId=?", new Object[] { branchId });
+
+	}
+	
+	public List<LibraryBranch> readLibraryBranchByName(String name) throws ClassNotFoundException, SQLException {
+		return read("SELECT * FROM tbl_library_branch WHERE branchName=?", new Object[] { name });
+
+	}
+	
 //	public List<LibraryBranch> readAllBorrowerByBranches(LibraryBranch branch) throws ClassNotFoundException, SQLException{
 //		return read("SELECT * FROM tbl_book_loans WHERE branchId = ?", new Object[]{branch.getBranchId()});
 //	}

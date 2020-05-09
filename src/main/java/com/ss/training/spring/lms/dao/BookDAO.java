@@ -29,6 +29,14 @@ public class BookDAO extends BaseDAO<Book>{
 		return read("SELECT * FROM tbl_book", null);
 	}
 	
+	public List<Book> readBookById(Integer bookId) throws ClassNotFoundException, SQLException {
+		return read("SELECT * FROM tbl_book WHERE bookId=?", new Object[] { bookId });
+	}
+
+	public List<Book> readBookByTitle(String title) throws ClassNotFoundException, SQLException {
+		return read("SELECT * FROM tbl_book WHERE title=?", new Object[] { title });
+	}
+	
 	public List<Book> readAllBooksByAuthor(Integer authorId) throws ClassNotFoundException, SQLException{
 		return read("SELECT * FROM tbl_book where bookId IN (select bookId from tbl_book_authors where authorId= ?)", new Object[]{authorId});
 	}
