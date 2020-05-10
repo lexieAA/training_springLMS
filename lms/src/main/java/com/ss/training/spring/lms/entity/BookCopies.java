@@ -1,86 +1,83 @@
 package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class BookCopies implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8084402665858290667L;
-	private Integer bookId;
-	private Integer branchId;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tbl_book_copies")
+public class BookCopies implements Serializable {
+
+	private static final long serialVersionUID = 3611414193371753169L;
+
+	@EmbeddedId
+	BookCopiesKey id;
+
+	@ManyToOne
+	@JoinColumn(name = "bookId", nullable = false)
+	private Book book;
+
+	@ManyToOne
+	@JoinColumn(name = "branchId", nullable = false)
+	private LibraryBranch branch;
+
+	@Column(name = "noOfCopies")
 	private Integer noOfCopies;
-	/**
-	 * @return the bookId
-	 */
-	public Integer getBookId() {
-		return bookId;
+
+	public BookCopiesKey getId() {
+		return id;
 	}
-	/**
-	 * @param bookId the bookId to set
-	 */
-	public void setBookId(Integer bookId) {
-		this.bookId = bookId;
+
+	public void setId(BookCopiesKey id) {
+		this.id = id;
 	}
-	/**
-	 * @return the branchId
-	 */
-	public Integer getBranchId() {
-		return branchId;
+
+	public Book getBook() {
+		return book;
 	}
-	/**
-	 * @param branchId the branchId to set
-	 */
-	public void setBranchId(Integer branchId) {
-		this.branchId = branchId;
+
+	public void setBook(Book book) {
+		this.book = book;
 	}
-	/**
-	 * @return the noOfCopies
-	 */
+
+	public LibraryBranch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(LibraryBranch branch) {
+		this.branch = branch;
+	}
+
 	public Integer getNoOfCopies() {
 		return noOfCopies;
 	}
-	/**
-	 * @param noOfCopies the noOfCopies to set
-	 */
+
 	public void setNoOfCopies(Integer noOfCopies) {
 		this.noOfCopies = noOfCopies;
 	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
-		result = prime * result + ((branchId == null) ? 0 : branchId.hashCode());
-		result = prime * result + ((noOfCopies == null) ? 0 : noOfCopies.hashCode());
-		return result;
+		return Objects.hash(book, branch, id, noOfCopies);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof BookCopies)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		BookCopies other = (BookCopies) obj;
-		if (bookId == null) {
-			if (other.bookId != null)
-				return false;
-		} else if (!bookId.equals(other.bookId))
-			return false;
-		if (branchId == null) {
-			if (other.branchId != null)
-				return false;
-		} else if (!branchId.equals(other.branchId))
-			return false;
-		if (noOfCopies == null) {
-			if (other.noOfCopies != null)
-				return false;
-		} else if (!noOfCopies.equals(other.noOfCopies))
-			return false;
-		return true;
+		return Objects.equals(book, other.book) && Objects.equals(branch, other.branch) && Objects.equals(id, other.id)
+				&& Objects.equals(noOfCopies, other.noOfCopies);
 	}
-	
+
 }

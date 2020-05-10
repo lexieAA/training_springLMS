@@ -13,13 +13,13 @@ public class BookDAO extends BaseDAO<Book>{
 		super(conn);
 	}
 
-	public Integer addBook(Book book) throws ClassNotFoundException, SQLException{
-		return saveWithPK("INSERT INTO tbl_book (title, pubId) VALUES (?)", new Object[] {book.getTitle(), book.getPublisherId()});
-	}
-
-	public void updateBook(Book book)  throws ClassNotFoundException, SQLException{
-		save("UPDATE tbl_book SET title = ? WHERE bookId = ?", new Object[] {book.getTitle(), book.getBookId(), book.getPublisherId()});
-	}
+//	public Integer addBook(Book book) throws ClassNotFoundException, SQLException{
+//		return saveWithPK("INSERT INTO tbl_book (title, pubId) VALUES (?)", new Object[] {book.getTitle(), book.getPublisherId()});
+//	}
+//
+//	public void updateBook(Book book)  throws ClassNotFoundException, SQLException{
+//		save("UPDATE tbl_book SET title = ? WHERE bookId = ?", new Object[] {book.getTitle(), book.getBookId(), book.getPublisherId()});
+//	}
 
 	public void deleteBook(Book book)  throws ClassNotFoundException, SQLException{
 		save("DELETE FROM tbl_book WHERE bookId = ?", new Object[]{book.getBookId()});
@@ -54,9 +54,9 @@ public class BookDAO extends BaseDAO<Book>{
 		List<Book> books = new ArrayList<>();
 		while(rs.next()){
 			Book book = new Book();
-			book.setBookId(rs.getInt("bookId"));
+			book.setBookId(rs.getLong("bookId"));
 			book.setTitle(rs.getString("title"));
-			book.setPublisherId(rs.getInt("pubId"));
+			//book.setPublisherId(rs.getLong("pubId"));
 			books.add(book);
 		}
 		return books;

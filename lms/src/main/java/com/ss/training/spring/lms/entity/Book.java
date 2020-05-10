@@ -2,125 +2,126 @@ package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-public class Book implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5416431360670324092L;
-	private Integer bookId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tbl_book")
+public class Book implements Serializable {
+
+	private static final long serialVersionUID = 3659016787776471054L;
+
+	@Id
+	@Column(name = "bookId")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long bookId;
+
+	@Column(name = "title")
 	private String title;
+
+	@ManyToMany
+	@JoinTable(name = "tbl_book_authors", joinColumns = @JoinColumn(name = "bookId"), inverseJoinColumns = @JoinColumn(name = "authorId"))
 	private List<Author> authors;
+
+	@ManyToMany
+	@JoinTable(name = "tbl_book_genres", joinColumns = @JoinColumn(name = "bookId"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
 	private List<Genre> genres;
-	private Integer publisherId;
-	//private List genres, branch, copies;
-	/**
-	 * @return the bookId
-	 */
-	public Integer getBookId() {
+
+	@ManyToOne
+	@JoinColumn(name = "pubId", nullable = false)
+	private Publisher publisher;
+
+	@OneToMany(mappedBy = "bookId")
+	private List<BookLoan> bookLoans;
+
+	@OneToMany(mappedBy = "bookId")
+	private List<BookCopies> bookCopies;
+
+	public Long getBookId() {
 		return bookId;
 	}
-	/**
-	 * @param bookId the bookId to set
-	 */
-	public void setBookId(Integer bookId) {
+
+	public void setBookId(Long bookId) {
 		this.bookId = bookId;
 	}
-	/**
-	 * @return the title
-	 */
+
 	public String getTitle() {
 		return title;
 	}
-	/**
-	 * @param title the title to set
-	 */
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	/**
-	 * @return the authors
-	 */
+
 	public List<Author> getAuthors() {
 		return authors;
 	}
-	/**
-	 * @param authors the authors to set
-	 */
+
 	public void setAuthors(List<Author> authors) {
 		this.authors = authors;
 	}
-	
-	/**
-	 * @return the genres
-	 */
+
 	public List<Genre> getGenres() {
 		return genres;
 	}
-	/**
-	 * @param genres the genres to set
-	 */
+
 	public void setGenres(List<Genre> genres) {
 		this.genres = genres;
 	}
-	/**
-	 * @return the publisher
-	 */
-	public Integer getPublisherId() {
-		return publisherId;
+
+	public Publisher getPublisher() {
+		return publisher;
 	}
-	/**
-	 * @param publisher the publisher to set
-	 */
-	public void setPublisherId (Integer publisherId) {
-		this.publisherId = publisherId;
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
+
+	public List<BookLoan> getBookLoans() {
+		return bookLoans;
+	}
+
+	public void setBookLoans(List<BookLoan> bookLoans) {
+		this.bookLoans = bookLoans;
+	}
+
+	public List<BookCopies> getBookCopies() {
+		return bookCopies;
+	}
+
+	public void setBookCopies(List<BookCopies> bookCopies) {
+		this.bookCopies = bookCopies;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((authors == null) ? 0 : authors.hashCode());
-		result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
-		result = prime * result + ((genres == null) ? 0 : genres.hashCode());
-		result = prime * result + ((publisherId == null) ? 0 : publisherId.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		return result;
+		return Objects.hash(authors, bookCopies, bookId, bookLoans, genres, publisher, title);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof Book)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		Book other = (Book) obj;
-		if (authors == null) {
-			if (other.authors != null)
-				return false;
-		} else if (!authors.equals(other.authors))
-			return false;
-		if (bookId == null) {
-			if (other.bookId != null)
-				return false;
-		} else if (!bookId.equals(other.bookId))
-			return false;
-		if (genres == null) {
-			if (other.genres != null)
-				return false;
-		} else if (!genres.equals(other.genres))
-			return false;
-		if (publisherId == null) {
-			if (other.publisherId != null)
-				return false;
-		} else if (!publisherId.equals(other.publisherId))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		return true;
+		return Objects.equals(authors, other.authors) && Objects.equals(bookCopies, other.bookCopies)
+				&& Objects.equals(bookId, other.bookId) && Objects.equals(bookLoans, other.bookLoans)
+				&& Objects.equals(genres, other.genres) && Objects.equals(publisher, other.publisher)
+				&& Objects.equals(title, other.title);
 	}
-	
+
 }

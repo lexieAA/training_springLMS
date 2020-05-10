@@ -35,7 +35,7 @@ public class GenreDAO extends BaseDAO<Genre>{
 		List<Genre> genres = new ArrayList<>();
 		while(rs.next()){
 			Genre genre = new Genre();
-			genre.setGenreId(rs.getInt("genreId"));
+			//genre.setGenreId(rs.getInt("genreId"));
 			genre.setGenreName(rs.getString("genreName"));
 			genres.add(genre);
 		}

@@ -35,7 +35,7 @@ public class AuthorDAO extends BaseDAO<Author>{
 		List<Author> authors = new ArrayList<>();
 		while(rs.next()){
 			Author author = new Author();
-			author.setAuthorId(rs.getInt("authorId"));
+			author.setAuthorId(rs.getLong("authorId"));
 			author.setAuthorName(rs.getString("authorName"));
 			authors.add(author);
 		}
