@@ -34,7 +34,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/authors")
+	@RequestMapping(path = "/lms/admin/authors", method = RequestMethod.GET)
 	public ResponseEntity<List<Author>> getAllAuthors() {
 
 		// read all authors
@@ -50,7 +50,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/authors/id/{authorId}")
+	@RequestMapping(path = "/lms/admin/authors/id/{authorId}", method = RequestMethod.GET)
 	public ResponseEntity<List<Author>> getAuthorById(@PathVariable Integer authorId) {
 
 		// read authors by author id
@@ -67,7 +67,7 @@ public class AdminController {
 
 	}
 
-	@RequestMapping(path = "/lms/admin/authors/name/{authorName}")
+	@RequestMapping(path = "/lms/admin/authors/name/{authorName}", method = RequestMethod.GET)
 	public ResponseEntity<List<Author>> getAuthorByName(@PathVariable String authorName) {
 
 		// read authors by author name
@@ -95,7 +95,7 @@ public class AdminController {
 
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * This method handles post requests for the passed object type. This case is
 	 * for the creation of a new object. The primary key value should be null in the
@@ -124,6 +124,33 @@ public class AdminController {
 			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
+	
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param authorId id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/authors/id/{authorId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deleteAuthor(@PathVariable Integer authorId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in saveAuthor()
+		Author author = new Author();
+		author.setAuthorId(authorId);
+		returnInt = adminService.saveAuthor(author);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -131,7 +158,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/publishers")
+	@RequestMapping(path = "/lms/admin/publishers", method = RequestMethod.GET)
 	public ResponseEntity<List<Publisher>> getAllPublishers() {
 
 		// read all publishers
@@ -147,7 +174,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/publishers/id/{publisherId}")
+	@RequestMapping(path = "/lms/admin/publishers/id/{publisherId}", method = RequestMethod.GET)
 	public ResponseEntity<List<Publisher>> getPublisherById(@PathVariable Integer publisherId) {
 
 		// read publishers by publisher id
@@ -163,7 +190,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/publishers/name/{publisherName}")
+	@RequestMapping(path = "/lms/admin/publishers/name/{publisherName}", method = RequestMethod.GET)
 	public ResponseEntity<List<Publisher>> getPublisherByName(@PathVariable String publisherName) {
 
 		// read publishers by publisher id
@@ -221,6 +248,33 @@ public class AdminController {
 			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
+	
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param publisherId id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/publishers/id/{publisherId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deletePublisher(@PathVariable Integer publisherId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in savePublisher()
+		Publisher publisher = new Publisher();
+		publisher.setPublisherId(publisherId);
+		returnInt = adminService.savePublisher(publisher);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -228,7 +282,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/borrowers")
+	@RequestMapping(path = "/lms/admin/borrowers", method = RequestMethod.GET)
 	public ResponseEntity<List<Borrower>> getAllBorrowers() {
 
 		// read all borrowers
@@ -244,7 +298,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/borrowers/cardNo/{borrowerId}")
+	@RequestMapping(path = "/lms/admin/borrowers/cardNo/{borrowerId}", method = RequestMethod.GET)
 	public ResponseEntity<List<Borrower>> getBorrowerById(@PathVariable Integer borrowerId) {
 
 		// read borrowers by borrower id
@@ -260,7 +314,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/borrowers/name/{borrowerName}")
+	@RequestMapping(path = "/lms/admin/borrowers/name/{borrowerName}", method = RequestMethod.GET)
 	public ResponseEntity<List<Borrower>> getBorrowerByName(@PathVariable String borrowerName) {
 
 		// read borrowers by borrower id
@@ -318,6 +372,33 @@ public class AdminController {
 			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
+	
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param cardNo id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/borrowers/cardNo/{cardNo}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deleteBorrower(@PathVariable Integer cardNo) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in saveBorrower()
+		Borrower borrower = new Borrower();
+		borrower.setCardNo(cardNo);
+		returnInt = adminService.saveBorrower(borrower);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -325,7 +406,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/genres")
+	@RequestMapping(path = "/lms/admin/genres", method = RequestMethod.GET)
 	public ResponseEntity<List<Genre>> getAllGenres() {
 
 		// read all genres
@@ -341,7 +422,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/genres/id/{genreId}")
+	@RequestMapping(path = "/lms/admin/genres/id/{genreId}", method = RequestMethod.GET)
 	public ResponseEntity<List<Genre>> getGenreById(@PathVariable Integer genreId) {
 
 		// read genres by genre id
@@ -357,7 +438,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/genres/name/{genreName}")
+	@RequestMapping(path = "/lms/admin/genres/name/{genreName}", method = RequestMethod.GET)
 	public ResponseEntity<List<Genre>> getGenreByName(@PathVariable String genreName) {
 
 		// read genres by genre id
@@ -414,6 +495,33 @@ public class AdminController {
 			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
+	
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param genreId id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/genres/id/{genreId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deleteGenre(@PathVariable Integer genreId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in saveGenre()
+		Genre genre = new Genre();
+		genre.setGenreId(genreId);
+		returnInt = adminService.saveGenre(genre);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -422,7 +530,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/branches")
+	@RequestMapping(path = "/lms/admin/branches", method = RequestMethod.GET)
 	public ResponseEntity<List<LibraryBranch>> getAllBranches() {
 
 		// read all branches
@@ -438,7 +546,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/branches/id/{branchId}")
+	@RequestMapping(path = "/lms/admin/branches/id/{branchId}", method = RequestMethod.GET)
 	public ResponseEntity<List<LibraryBranch>> getBranchById(@PathVariable Integer branchId) {
 
 		// read branches by branch id
@@ -454,7 +562,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/branches/name/{branchName}")
+	@RequestMapping(path = "/lms/admin/branches/name/{branchName}", method = RequestMethod.GET)
 	public ResponseEntity<List<LibraryBranch>> getBranchByName(@PathVariable String branchName) {
 
 		// read branches by branch id
@@ -482,7 +590,7 @@ public class AdminController {
 
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * This method handles post requests for the passed object type. This case is
 	 * for the creation of a new object. The primary key value should be null in the
@@ -512,6 +620,33 @@ public class AdminController {
 			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
 		}
 	}
+	
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param branchId id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/branches/id/{branchId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deleteBranch(@PathVariable Integer branchId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in saveBranch()
+		LibraryBranch branch = new LibraryBranch();
+		branch.setBranchId(branchId);
+		returnInt = adminService.saveBranch(branch);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -519,7 +654,7 @@ public class AdminController {
 	//
 	//
 
-	@RequestMapping(path = "/lms/admin/books")
+	@RequestMapping(path = "/lms/admin/books", method = RequestMethod.GET)
 	public ResponseEntity<List<Book>> getAllBooks() {
 
 		// read all books
@@ -535,7 +670,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/books/id/{bookId}")
+	@RequestMapping(path = "/lms/admin/books/id/{bookId}", method = RequestMethod.GET)
 	public ResponseEntity<List<Book>> getBookById(@PathVariable Integer bookId) {
 
 		// read books by book id
@@ -551,7 +686,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/books/title/{bookTitle}")
+	@RequestMapping(path = "/lms/admin/books/title/{bookTitle}", method = RequestMethod.GET)
 	public ResponseEntity<List<Book>> getBookByTitle(@PathVariable String bookTitle) {
 
 		// read books by book id
@@ -578,5 +713,62 @@ public class AdminController {
 		}
 
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param book passed object from client
+	 * @return -1 indicating failure; positive Integer indicating success, with the
+	 *         value being the key created
+	 */
+	@RequestMapping(path = "/lms/admin/books", method = RequestMethod.POST)
+	public ResponseEntity<Integer> createBook(@RequestBody Book book) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new book if request object contains the necessary information
+		if (book != null && book.getBookId() == null && book.getTitle() != null && book.getPublisherId() != null
+				&& book.getAuthors() != null) {
+			returnInt = adminService.saveBook(book);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param bookId id of object to delete
+	 * @return BAD_REQUEST indicating failure when id delete not found; OK
+	 *         indicating success
+	 */
+	@RequestMapping(path = "/lms/admin/books/id/{bookId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Integer> deleteBook(@PathVariable Integer bookId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+		
+		// create an object with an id and null name to indicate a delete in saveBook()
+		Book book = new Book();
+		book.setBookId(bookId);
+		returnInt = adminService.saveBook(book);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
 	}
 }

@@ -14,7 +14,12 @@ public class BookDAO extends BaseDAO<Book>{
 	}
 
 	public Integer addBook(Book book) throws ClassNotFoundException, SQLException{
-		return saveWithPK("INSERT INTO tbl_book (title, pubId) VALUES (?)", new Object[] {book.getTitle(), book.getPublisherId()});
+		return saveWithPK("INSERT INTO tbl_book (title, pubId) VALUES (?, ?)", new Object[] {book.getTitle(), book.getPublisherId()});
+	}
+	
+	public void addBookAuthorRelationship(Integer bookId, Integer authorId)
+			throws ClassNotFoundException, SQLException {
+		save("INSERT INTO tbl_book_authors (bookId, authorId) VALUES (?, ?)", new Object[] { bookId, authorId });
 	}
 
 	public void updateBook(Book book) throws ClassNotFoundException, SQLException {
@@ -22,8 +27,17 @@ public class BookDAO extends BaseDAO<Book>{
 				new Object[] { book.getTitle(), book.getPublisherId(), book.getBookId() });
 	}
 
-	public void deleteBook(Book book)  throws ClassNotFoundException, SQLException{
-		save("DELETE FROM tbl_book WHERE bookId = ?", new Object[]{book.getBookId()});
+	public void deleteBook(Book book) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book WHERE bookId = ?", new Object[] { book.getBookId() });
+	}
+	
+	public void deleteBooksByAuthorId(Integer authorId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book WHERE bookId IN (SELECT bookId FROM tbl_book_authors WHERE authorId=?)",
+				new Object[] { authorId });
+	}
+	
+	public void deleteBooksByPubId(Integer pubId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book WHERE pubId=?", new Object[] { pubId });
 	}
 	
 	public List<Book> readAllBooks() throws ClassNotFoundException, SQLException{

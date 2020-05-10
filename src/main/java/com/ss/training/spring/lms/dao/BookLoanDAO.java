@@ -40,6 +40,24 @@ public class BookLoanDAO extends BaseDAO<BookLoan>{
 				new Object[]{loan.getBookId(),loan.getBranchId(), loan.getCardNo(), loan.getDateOut()});
 	}
 	
+	public void deleteBookLoansByAuthorId(Integer authorId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_loans WHERE bookId IN (SELECT bookId FROM tbl_book WHERE bookId IN (SELECT bookId FROM tbl_book_authors WHERE authorId=?))",
+				new Object[] { authorId });
+	}
+	
+	public void deleteBookLoansByPubId(Integer publisherId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_loans WHERE bookId IN (SELECT bookId FROM tbl_book WHERE pubId=?)",
+				new Object[] { publisherId });
+	}
+	
+	public void deleteBookLoansByBranchId(Integer branchId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_loans WHERE branchId=?", new Object[] { branchId });
+	}
+
+	public void deleteBookLoansByCardNo(Integer cardNo) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_loans WHERE cardNo=?", new Object[] { cardNo });
+	}
+	
 	public List<BookLoan> readAllBookLoans() throws ClassNotFoundException, SQLException{
 		return read("SELECT * FROM tbl_book_loans", null);
 	}

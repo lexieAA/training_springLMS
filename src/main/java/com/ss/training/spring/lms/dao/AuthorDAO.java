@@ -41,7 +41,7 @@ public class AuthorDAO extends BaseDAO<Author> {
 
 	public List<Author> readAllAuthorsByBookId(Integer bookId) throws ClassNotFoundException, SQLException {
 		return read(
-				"SELECT * FROM tbl_author WHERE authorId IN (SELECT authorId FROM tbl_book_authors WHERE bookId= ?)",
+				"SELECT * FROM tbl_author WHERE authorId IN (SELECT authorId FROM tbl_book_authors WHERE bookId=?)",
 				new Object[] { bookId });
 	}
 

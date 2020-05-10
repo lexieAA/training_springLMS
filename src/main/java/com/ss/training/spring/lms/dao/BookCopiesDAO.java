@@ -29,6 +29,42 @@ public class BookCopiesDAO extends BaseDAO<BookCopies>{
 				new Object[]{copy.getBookId(),copy.getBranchId()});
 	}
 	
+	public void deleteBookCopiesByBranchId(Integer branchId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_copies WHERE branchId=?",
+				new Object[] { branchId });
+	}
+	
+	/**
+	 * Deletes all book copies in the book copies table where the author matches the
+	 * passed bookId parameter
+	 * 
+	 * @param bookId deletes all book copies matching this bookId
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void deleteBookCopiesByAuthorId(Integer authorId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_copies WHERE bookId IN (SELECT bookId FROM tbl_book WHERE bookId IN (SELECT bookId FROM tbl_book_authors WHERE authorId=?))",
+				new Object[] { authorId });
+	}
+	
+	/**
+	 * Deletes all book copies in the book copies table where the author matches the
+	 * passed bookId parameter
+	 * 
+	 * @param bookId deletes all book copies matching this bookId
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void deleteBookCopiesByBookId(Integer bookId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_copies WHERE bookId IN (SELECT bookId FROM tbl_book WHERE bookId=?)",
+				new Object[] { bookId });
+	}
+	
+	public void deleteBookCopiesByPubId(Integer publisherId) throws ClassNotFoundException, SQLException {
+		save("DELETE FROM tbl_book_copies WHERE bookId IN (SELECT bookId FROM tbl_book WHERE pubId=?)",
+				new Object[] { publisherId });
+	}
+	
 	public List<BookCopies> readAllBookCopies() throws ClassNotFoundException, SQLException{
 		return read("SELECT * FROM tbl_book_copies", null);
 	}
