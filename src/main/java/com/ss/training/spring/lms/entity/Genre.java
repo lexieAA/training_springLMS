@@ -1,65 +1,76 @@
 package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
-public class Genre implements Serializable{
-	/**
-	 * 
-	 */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name = "tbl_genre")
+public class Genre implements Serializable {
+
 	private static final long serialVersionUID = -3655735155901940805L;
-	private Integer genreId;
+
+	@Id
+	@Column(name = "genre_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long genreId;
+
+	@Column(name = "genre_name")
 	private String genreName;
-	/**
-	 * @return the genreId
-	 */
-	public Integer getGenreId() {
+
+	@ManyToMany(mappedBy = "genres")
+	@JsonBackReference
+	private List<Book> books;
+
+	public Long getGenreId() {
 		return genreId;
 	}
-	/**
-	 * @param genreId the genreId to set
-	 */
-	public void setGenreId(Integer genreId) {
+
+	public void setGenreId(Long genreId) {
 		this.genreId = genreId;
 	}
-	/**
-	 * @return the genreName
-	 */
+
 	public String getGenreName() {
 		return genreName;
 	}
-	/**
-	 * @param genreName the genreName to set
-	 */
+
 	public void setGenreName(String genreName) {
 		this.genreName = genreName;
 	}
+
+	public List<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<Book> books) {
+		this.books = books;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((genreId == null) ? 0 : genreId.hashCode());
-		result = prime * result + ((genreName == null) ? 0 : genreName.hashCode());
-		return result;
+		return Objects.hash(genreId);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof Genre)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		Genre other = (Genre) obj;
-		if (genreId == null) {
-			if (other.genreId != null)
-				return false;
-		} else if (!genreId.equals(other.genreId))
-			return false;
-		if (genreName == null) {
-			if (other.genreName != null)
-				return false;
-		} else if (!genreName.equals(other.genreName))
-			return false;
-		return true;
+		return Objects.equals(genreId, other.genreId);
 	}
+
 }

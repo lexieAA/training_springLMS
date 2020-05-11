@@ -2,92 +2,78 @@ package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-public class Author implements Serializable{
-	/**
-	 * 
-	 */
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name = "tbl_author")
+public class Author implements Serializable {
+
 	private static final long serialVersionUID = -8859746688226373282L;
-	private Integer authorId;
-	private String authorName;
-	private List<Book> books;
 
-	/**
-	 * @return the authorId
-	 */
-	public Integer getAuthorId() {
+
+	@Id
+	@Column(name = "authorId")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long authorId;
+
+	@Column(name = "authorName")
+	private String authorName;
+
+	@ManyToMany(mappedBy = "authors")
+	@JsonBackReference
+	private List<Book> books;
+	
+	public Long getAuthorId() {
 		return authorId;
 	}
 
-	/**
-	 * @param authorId the authorId to set
-	 */
-	public void setAuthorId(Integer authorId) {
+	public void setAuthorId(Long authorId) {
 		this.authorId = authorId;
 	}
 
-	/**
-	 * @return the authorName
-	 */
 	public String getAuthorName() {
 		return authorName;
 	}
 
-	/**
-	 * @param authorName the authorName to set
-	 */
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
 	}
 
-	/**
-	 * @return the books
-	 */
 	public List<Book> getBooks() {
 		return books;
 	}
 
-	/**
-	 * @param books the books to set
-	 */
 	public void setBooks(List<Book> books) {
 		this.books = books;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((authorId == null) ? 0 : authorId.hashCode());
-		result = prime * result + ((authorName == null) ? 0 : authorName.hashCode());
-		result = prime * result + ((books == null) ? 0 : books.hashCode());
-		return result;
+		return Objects.hash(authorId);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof Author)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		Author other = (Author) obj;
-		if (authorId == null) {
-			if (other.authorId != null)
-				return false;
-		} else if (!authorId.equals(other.authorId))
-			return false;
-		if (authorName == null) {
-			if (other.authorName != null)
-				return false;
-		} else if (!authorName.equals(other.authorName))
-			return false;
-		if (books == null) {
-			if (other.books != null)
-				return false;
-		} else if (!books.equals(other.books))
-			return false;
-		return true;
+		return Objects.equals(authorId, other.authorId);
 	}
+
 }

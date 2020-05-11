@@ -1,103 +1,95 @@
 package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
-public class Borrower implements Serializable{
-	/**
-	 * 
-	 */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tbl_borrower")
+public class Borrower implements Serializable {
+
 	private static final long serialVersionUID = -4691814048768809869L;
-	private Integer cardNo;
+
+	@Id
+	@Column(name = "cardNo")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long cardNo;
+
+	@Column(name = "name")
 	private String borrowerName;
+
+	@Column(name = "address")
 	private String borrowerAddress;
+
+	@Column(name = "phone")
 	private String borrowerPhone;
-	/**
-	 * @return the cardNo
-	 */
-	public Integer getCardNo() {
+
+//	@OneToMany(mappedBy = "book")
+//	private List<BookLoan> bookLoans;
+
+	public Long getCardNo() {
 		return cardNo;
 	}
-	/**
-	 * @param cardNo the cardNo to set
-	 */
-	public void setCardNo(Integer cardNo) {
+
+	public void setCardNo(Long cardNo) {
 		this.cardNo = cardNo;
 	}
-	/**
-	 * @return the borrowerName
-	 */
+
 	public String getBorrowerName() {
 		return borrowerName;
 	}
-	/**
-	 * @param borrowerName the borrowerName to set
-	 */
+
 	public void setBorrowerName(String borrowerName) {
 		this.borrowerName = borrowerName;
 	}
-	/**
-	 * @return the borrowerAddress
-	 */
+
 	public String getBorrowerAddress() {
 		return borrowerAddress;
 	}
-	/**
-	 * @param borrowerAddress the borrowerAddress to set
-	 */
+
 	public void setBorrowerAddress(String borrowerAddress) {
 		this.borrowerAddress = borrowerAddress;
 	}
-	/**
-	 * @return the borrowerPhone
-	 */
+
 	public String getBorrowerPhone() {
 		return borrowerPhone;
 	}
-	/**
-	 * @param borrowerPhone the borrowerPhone to set
-	 */
+
 	public void setBorrowerPhone(String borrowerPhone) {
 		this.borrowerPhone = borrowerPhone;
 	}
+
+//	public List<BookLoan> getBookLoans() {
+//		return bookLoans;
+//	}
+//
+//	public void setBookLoans(List<BookLoan> bookLoans) {
+//		this.bookLoans = bookLoans;
+//	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((borrowerAddress == null) ? 0 : borrowerAddress.hashCode());
-		result = prime * result + ((borrowerName == null) ? 0 : borrowerName.hashCode());
-		result = prime * result + ((borrowerPhone == null) ? 0 : borrowerPhone.hashCode());
-		result = prime * result + ((cardNo == null) ? 0 : cardNo.hashCode());
-		return result;
+		return Objects.hash(cardNo);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof Borrower)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		Borrower other = (Borrower) obj;
-		if (borrowerAddress == null) {
-			if (other.borrowerAddress != null)
-				return false;
-		} else if (!borrowerAddress.equals(other.borrowerAddress))
-			return false;
-		if (borrowerName == null) {
-			if (other.borrowerName != null)
-				return false;
-		} else if (!borrowerName.equals(other.borrowerName))
-			return false;
-		if (borrowerPhone == null) {
-			if (other.borrowerPhone != null)
-				return false;
-		} else if (!borrowerPhone.equals(other.borrowerPhone))
-			return false;
-		if (cardNo == null) {
-			if (other.cardNo != null)
-				return false;
-		} else if (!cardNo.equals(other.cardNo))
-			return false;
-		return true;
+		return Objects.equals(cardNo, other.cardNo);
 	}
+
 }
