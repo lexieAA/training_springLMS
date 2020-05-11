@@ -30,7 +30,7 @@ public class LibraryController {
 
 	// update all branches
 	@PutMapping("/branches/{branchId}")
-	public LibraryBranch updateLibraryBranch(@RequestBody LibraryBranch libraryBranch, @PathVariable Integer branchId) {
+	public LibraryBranch updateLibraryBranch(@RequestBody LibraryBranch libraryBranch, @PathVariable Long branchId) {
 		libraryBranch.setBranchId(branchId);
 		return libraryService.updateLibraryBranch(libraryBranch);
 	}

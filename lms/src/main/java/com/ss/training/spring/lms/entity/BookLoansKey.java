@@ -1,5 +1,4 @@
 package com.ss.training.spring.lms.entity;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,7 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class BookLoansKey implements Serializable {
 
-	private static final long serialVersionUID = 1001942243672969459L;
+	private static final long serialVersionUID = -2149958063479848070L;
 
 	@Column(name = "bookId")
 	private Long bookId;
@@ -42,10 +41,6 @@ public class BookLoansKey implements Serializable {
 
 	public void setCardNo(Long cardNo) {
 		this.cardNo = cardNo;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	@Override

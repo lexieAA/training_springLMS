@@ -19,7 +19,7 @@ public class LibraryBranch implements Serializable{
 	@Id
 	@Column(name = "branchId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer branchId;
+	private Long branchId;
 	
 	@Column(name = "branchName")
 	private String branchName;
@@ -29,13 +29,13 @@ public class LibraryBranch implements Serializable{
 	/**
 	 * @return the branchId
 	 */
-	public Integer getBranchId() {
+	public Long getBranchId() {
 		return branchId;
 	}
 	/**
 	 * @param branchId the branchId to set
 	 */
-	public void setBranchId(Integer branchId) {
+	public void setBranchId(Long branchId) {
 		this.branchId = branchId;
 	}
 	/**

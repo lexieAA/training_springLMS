@@ -8,23 +8,26 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_book_copies")
 public class BookCopies implements Serializable {
 
-	private static final long serialVersionUID = 3611414193371753169L;
+	private static final long serialVersionUID = 8084402665858290667L;
 
 	@EmbeddedId
 	BookCopiesKey id;
 
 	@ManyToOne
-	@JoinColumn(name = "bookId", nullable = false)
+	@MapsId("id")
+	@JoinColumn(name = "bookId")
 	private Book book;
 
 	@ManyToOne
-	@JoinColumn(name = "branchId", nullable = false)
+	@MapsId("id")
+	@JoinColumn(name = "branchId")
 	private LibraryBranch branch;
 
 	@Column(name = "noOfCopies")
@@ -64,7 +67,7 @@ public class BookCopies implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(book, branch, id, noOfCopies);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -76,8 +79,7 @@ public class BookCopies implements Serializable {
 			return false;
 		}
 		BookCopies other = (BookCopies) obj;
-		return Objects.equals(book, other.book) && Objects.equals(branch, other.branch) && Objects.equals(id, other.id)
-				&& Objects.equals(noOfCopies, other.noOfCopies);
+		return Objects.equals(id, other.id);
 	}
 
 }

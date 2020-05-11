@@ -4,22 +4,19 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_author")
 public class Author implements Serializable {
-	
-	private static final long serialVersionUID = 8115386083228601769L;
+
+	private static final long serialVersionUID = -8859746688226373282L;
 
 	@Id
 	@Column(name = "authorId")
@@ -29,11 +26,7 @@ public class Author implements Serializable {
 	@Column(name = "authorName")
 	private String authorName;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "tbl_book_authors", 
-      joinColumns = @JoinColumn(name = "bookId"), 
-      inverseJoinColumns = @JoinColumn(name = "authorId", 
-      referencedColumnName = "authorId"))
+	@ManyToMany(mappedBy = "authors")
 	private List<Book> books;
 
 	public Long getAuthorId() {
@@ -62,7 +55,7 @@ public class Author implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(authorId, authorName, books);
+		return Objects.hash(authorId);
 	}
 
 	@Override
@@ -74,8 +67,7 @@ public class Author implements Serializable {
 			return false;
 		}
 		Author other = (Author) obj;
-		return Objects.equals(authorId, other.authorId) && Objects.equals(authorName, other.authorName)
-				&& Objects.equals(books, other.books);
+		return Objects.equals(authorId, other.authorId);
 	}
 
 }

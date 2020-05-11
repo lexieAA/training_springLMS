@@ -1,5 +1,6 @@
 package com.ss.training.spring.lms.entity;
 
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_borrower")
 public class Borrower implements Serializable {
 
-	private static final long serialVersionUID = -1938865417391742651L;
+	private static final long serialVersionUID = -4691814048768809869L;
 
 	@Id
 	@Column(name = "cardNo")
@@ -32,7 +33,7 @@ public class Borrower implements Serializable {
 	@Column(name = "phone")
 	private String borrowerPhone;
 
-	@OneToMany(mappedBy = "cardNo")
+	@OneToMany(mappedBy = "book")
 	private List<BookLoan> bookLoans;
 
 	public Long getCardNo() {
@@ -77,7 +78,7 @@ public class Borrower implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(bookLoans, borrowerAddress, borrowerName, borrowerPhone, cardNo);
+		return Objects.hash(cardNo);
 	}
 
 	@Override
@@ -89,9 +90,7 @@ public class Borrower implements Serializable {
 			return false;
 		}
 		Borrower other = (Borrower) obj;
-		return Objects.equals(bookLoans, other.bookLoans) && Objects.equals(borrowerAddress, other.borrowerAddress)
-				&& Objects.equals(borrowerName, other.borrowerName)
-				&& Objects.equals(borrowerPhone, other.borrowerPhone) && Objects.equals(cardNo, other.cardNo);
+		return Objects.equals(cardNo, other.cardNo);
 	}
 
 }

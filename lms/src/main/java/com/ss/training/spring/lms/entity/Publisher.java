@@ -1,5 +1,4 @@
 package com.ss.training.spring.lms.entity;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_publisher")
 public class Publisher implements Serializable {
 
-	private static final long serialVersionUID = -7566485268309731500L;
+	private static final long serialVersionUID = -8393917397273467905L;
 
 	@Id
 	@Column(name = "publisherId")
@@ -77,7 +76,7 @@ public class Publisher implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(publishedBooks, publisherAddress, publisherId, publisherName, publisherPhone);
+		return Objects.hash(publisherId);
 	}
 
 	@Override
@@ -89,10 +88,7 @@ public class Publisher implements Serializable {
 			return false;
 		}
 		Publisher other = (Publisher) obj;
-		return Objects.equals(publishedBooks, other.publishedBooks)
-				&& Objects.equals(publisherAddress, other.publisherAddress)
-				&& Objects.equals(publisherId, other.publisherId) && Objects.equals(publisherName, other.publisherName)
-				&& Objects.equals(publisherPhone, other.publisherPhone);
+		return Objects.equals(publisherId, other.publisherId);
 	}
 
 }

@@ -2,7 +2,6 @@
  * 
  */
 package com.ss.training.spring.lms.entity;
-
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
@@ -12,26 +11,30 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_book_loans")
 public class BookLoan implements Serializable {
 
-	private static final long serialVersionUID = 7894145153962443307L;
+	private static final long serialVersionUID = -326651163829760200L;
 
 	@EmbeddedId
 	BookLoansKey id;
 
 	@ManyToOne
+	@MapsId("id")
 	@JoinColumn(name = "bookId")
 	private Book book;
 
 	@ManyToOne
+	@MapsId("id")
 	@JoinColumn(name = "branchId")
 	private LibraryBranch branch;
 
 	@ManyToOne
+	@MapsId("id")
 	@JoinColumn(name = "cardNo")
 	private Borrower borrower;
 
@@ -100,13 +103,9 @@ public class BookLoan implements Serializable {
 		this.dateIn = dateIn;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(book, borrower, branch, dateIn, dateOut, dueDate, id);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -118,10 +117,7 @@ public class BookLoan implements Serializable {
 			return false;
 		}
 		BookLoan other = (BookLoan) obj;
-		return Objects.equals(book, other.book) && Objects.equals(borrower, other.borrower)
-				&& Objects.equals(branch, other.branch) && Objects.equals(dateIn, other.dateIn)
-				&& Objects.equals(dateOut, other.dateOut) && Objects.equals(dueDate, other.dueDate)
-				&& Objects.equals(id, other.id);
+		return Objects.equals(id, other.id);
 	}
 
 }
