@@ -1,6 +1,6 @@
 package com.ss.training.spring.lms.entity;
+
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +21,7 @@ public class Publisher implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long publisherId;
 
-	@Column(name = "pulbisherName")
+	@Column(name = "publisherName")
 	private String publisherName;
 
 	@Column(name = "publisherAddress")
@@ -31,8 +30,8 @@ public class Publisher implements Serializable {
 	@Column(name = "publisherPhone")
 	private String publisherPhone;
 
-	@OneToMany(mappedBy = "publisher")
-	private List<Book> publishedBooks;
+//	@OneToMany(mappedBy = "publisher")
+//	private List<Book> publishedBooks;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -66,13 +65,13 @@ public class Publisher implements Serializable {
 		this.publisherPhone = publisherPhone;
 	}
 
-	public List<Book> getPublishedBooks() {
-		return publishedBooks;
-	}
-
-	public void setPublishedBooks(List<Book> publishedBooks) {
-		this.publishedBooks = publishedBooks;
-	}
+//	public List<Book> getPublishedBooks() {
+//		return publishedBooks;
+//	}
+//
+//	public void setPublishedBooks(List<Book> publishedBooks) {
+//		this.publishedBooks = publishedBooks;
+//	}
 
 	@Override
 	public int hashCode() {

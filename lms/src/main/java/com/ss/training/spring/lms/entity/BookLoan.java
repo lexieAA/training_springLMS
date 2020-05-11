@@ -9,9 +9,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
@@ -23,21 +20,6 @@ public class BookLoan implements Serializable {
 	@EmbeddedId
 	BookLoansKey id;
 
-	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "bookId")
-	private Book book;
-
-	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "branchId")
-	private LibraryBranch branch;
-
-	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "cardNo")
-	private Borrower borrower;
-
 	@Column(name = "dateOut")
 	private Date dateOut;
 
@@ -46,6 +28,18 @@ public class BookLoan implements Serializable {
 
 	@Column(name = "dateIn")
 	private Date dateIn;
+	
+	public BookLoan() {
+		
+	}
+
+	public BookLoan(BookLoansKey id, Date dateOut, Date dueDate, Date dateIn) {
+		super();
+		this.id = id;
+		this.dateOut = dateOut;
+		this.dueDate = dueDate;
+		this.dateIn = dateIn;
+	}
 
 	public BookLoansKey getId() {
 		return id;
@@ -53,30 +47,6 @@ public class BookLoan implements Serializable {
 
 	public void setId(BookLoansKey id) {
 		this.id = id;
-	}
-
-	public Book getBook() {
-		return book;
-	}
-
-	public void setBook(Book book) {
-		this.book = book;
-	}
-
-	public LibraryBranch getBranch() {
-		return branch;
-	}
-
-	public void setBranch(LibraryBranch branch) {
-		this.branch = branch;
-	}
-
-	public Borrower getBorrower() {
-		return borrower;
-	}
-
-	public void setBorrower(Borrower borrower) {
-		this.borrower = borrower;
 	}
 
 	public Date getDateOut() {

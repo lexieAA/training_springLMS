@@ -6,9 +6,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
@@ -20,50 +17,51 @@ public class BookCopies implements Serializable {
 	@EmbeddedId
 	BookCopiesKey id;
 
-	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "bookId")
-	private Book book;
-
-	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "branchId")
-	private LibraryBranch branch;
-
 	@Column(name = "noOfCopies")
 	private Integer noOfCopies;
+	
+	public BookCopies() {
+		
+	}
 
+	public BookCopies(BookCopiesKey id, Integer noOfCopies) {
+		super();
+		this.id = id;
+		this.noOfCopies = noOfCopies;
+	}
+
+
+	/**
+	 * @return the id
+	 */
 	public BookCopiesKey getId() {
 		return id;
 	}
 
+
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(BookCopiesKey id) {
 		this.id = id;
 	}
 
-	public Book getBook() {
-		return book;
-	}
 
-	public void setBook(Book book) {
-		this.book = book;
-	}
-
-	public LibraryBranch getBranch() {
-		return branch;
-	}
-
-	public void setBranch(LibraryBranch branch) {
-		this.branch = branch;
-	}
-
+	/**
+	 * @return the noOfCopies
+	 */
 	public Integer getNoOfCopies() {
 		return noOfCopies;
 	}
 
+
+	/**
+	 * @param noOfCopies the noOfCopies to set
+	 */
 	public void setNoOfCopies(Integer noOfCopies) {
 		this.noOfCopies = noOfCopies;
 	}
+
 
 	@Override
 	public int hashCode() {

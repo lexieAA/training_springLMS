@@ -1,6 +1,5 @@
 package com.ss.training.spring.lms.entity;
 
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -33,8 +32,8 @@ public class Borrower implements Serializable {
 	@Column(name = "phone")
 	private String borrowerPhone;
 
-	@OneToMany(mappedBy = "book")
-	private List<BookLoan> bookLoans;
+//	@OneToMany(mappedBy = "book")
+//	private List<BookLoan> bookLoans;
 
 	public Long getCardNo() {
 		return cardNo;
@@ -68,13 +67,13 @@ public class Borrower implements Serializable {
 		this.borrowerPhone = borrowerPhone;
 	}
 
-	public List<BookLoan> getBookLoans() {
-		return bookLoans;
-	}
-
-	public void setBookLoans(List<BookLoan> bookLoans) {
-		this.bookLoans = bookLoans;
-	}
+//	public List<BookLoan> getBookLoans() {
+//		return bookLoans;
+//	}
+//
+//	public void setBookLoans(List<BookLoan> bookLoans) {
+//		this.bookLoans = bookLoans;
+//	}
 
 	@Override
 	public int hashCode() {

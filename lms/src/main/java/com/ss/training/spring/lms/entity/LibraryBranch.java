@@ -11,57 +11,65 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_library_branch")
-public class LibraryBranch implements Serializable{
+public class LibraryBranch implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3322696514580579092L;
+	private static final long serialVersionUID = -3419883909722235308L;
+
 	@Id
 	@Column(name = "branchId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long branchId;
-	
+
 	@Column(name = "branchName")
 	private String branchName;
-	
+
 	@Column(name = "branchAddress")
 	private String branchAddress;
+
 	/**
 	 * @return the branchId
 	 */
 	public Long getBranchId() {
 		return branchId;
 	}
+
 	/**
 	 * @param branchId the branchId to set
 	 */
 	public void setBranchId(Long branchId) {
 		this.branchId = branchId;
 	}
+
 	/**
 	 * @return the branchName
 	 */
 	public String getBranchName() {
 		return branchName;
 	}
+
 	/**
 	 * @param branchName the branchName to set
 	 */
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
 	}
+
 	/**
 	 * @return the branchAddress
 	 */
 	public String getBranchAddress() {
 		return branchAddress;
 	}
+
 	/**
 	 * @param branchAddress the branchAddress to set
 	 */
 	public void setBranchAddress(String branchAddress) {
 		this.branchAddress = branchAddress;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -71,6 +79,7 @@ public class LibraryBranch implements Serializable{
 		result = prime * result + ((branchName == null) ? 0 : branchName.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

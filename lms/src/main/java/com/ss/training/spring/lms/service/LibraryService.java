@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ss.training.spring.lms.dao.BookCopiesDAO;
 import com.ss.training.spring.lms.dao.LibraryBranchDAO;
+import com.ss.training.spring.lms.entity.Book;
 import com.ss.training.spring.lms.entity.BookCopies;
+import com.ss.training.spring.lms.entity.BookCopiesKey;
 import com.ss.training.spring.lms.entity.LibraryBranch;
 
 public class LibraryService {
@@ -30,7 +32,8 @@ public class LibraryService {
 		return libraryBranchDao.findAll();
 	}
 
-	public List<BookCopies> readAllBookCopiesByBranch() {
+	public List<BookCopies> readBookCopiesByBranchAndBook(Long branchId, Long bookId) {
+		
 		return bookCopiesDao.findAll();
 
 	}

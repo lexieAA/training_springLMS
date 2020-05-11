@@ -1,4 +1,5 @@
 package com.ss.training.spring.lms.entity;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -11,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,22 +29,28 @@ public class Book implements Serializable {
 	private String title;
 
 	@ManyToMany
-	@JoinTable(name = "tbl_book_authors", joinColumns = @JoinColumn(name = "bookId"), inverseJoinColumns = @JoinColumn(name = "authorId"))
+	@JoinTable(name = "tbl_book_authors", 
+		joinColumns = @JoinColumn(name = "bookId"), 
+		inverseJoinColumns = @JoinColumn(name = "authorId"))
+//	@JsonManagedReference
 	private List<Author> authors;
 
 	@ManyToMany
-	@JoinTable(name = "tbl_book_genres", joinColumns = @JoinColumn(name = "bookId"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	@JoinTable(name = "tbl_book_genres", 
+		joinColumns = @JoinColumn(name = "bookId"), 
+		inverseJoinColumns = @JoinColumn(name = "genre_id"))
+//	@JsonManagedReference
 	private List<Genre> genres;
 
-	@ManyToOne
-	@JoinColumn(name = "pubId", nullable = false)
-	private Publisher publisher;
-
-	@OneToMany(mappedBy = "book")
-	private List<BookCopies> bookLoans;
-
-	@OneToMany(mappedBy = "book")
-	private List<BookLoan> bookCopies;
+//	@ManyToOne
+//	@JoinColumn(name = "pubId", nullable = false)
+//	private Publisher publisher;
+//
+//	@OneToMany(mappedBy = "book")
+//	private List<BookCopies> bookLoans;
+//
+//	@OneToMany(mappedBy = "book")
+//	private List<BookLoan> bookCopies;
 
 	public Long getBookId() {
 		return bookId;
@@ -79,29 +84,29 @@ public class Book implements Serializable {
 		this.genres = genres;
 	}
 
-	public Publisher getPublisher() {
-		return publisher;
-	}
-
-	public void setPublisher(Publisher publisher) {
-		this.publisher = publisher;
-	}
-
-	public List<BookCopies> getBookLoans() {
-		return bookLoans;
-	}
-
-	public void setBookLoans(List<BookCopies> bookLoans) {
-		this.bookLoans = bookLoans;
-	}
-
-	public List<BookLoan> getBookCopies() {
-		return bookCopies;
-	}
-
-	public void setBookCopies(List<BookLoan> bookCopies) {
-		this.bookCopies = bookCopies;
-	}
+//	public Publisher getPublisher() {
+//		return publisher;
+//	}
+//
+//	public void setPublisher(Publisher publisher) {
+//		this.publisher = publisher;
+//	}
+//
+//	public List<BookCopies> getBookLoans() {
+//		return bookLoans;
+//	}
+//
+//	public void setBookLoans(List<BookCopies> bookLoans) {
+//		this.bookLoans = bookLoans;
+//	}
+//
+//	public List<BookLoan> getBookCopies() {
+//		return bookCopies;
+//	}
+//
+//	public void setBookCopies(List<BookLoan> bookCopies) {
+//		this.bookCopies = bookCopies;
+//	}
 
 	@Override
 	public int hashCode() {

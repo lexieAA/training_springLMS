@@ -36,18 +36,17 @@ public class LibraryController {
 	}
 
 	// read all book copies
-	@GetMapping("/branches/{branchId}/bookCopies")
-	public List<BookCopies> getAllLibraryBookCopies() {
-		return libraryService.readAllBookCopiesByBranch();
+	@GetMapping("/branches/{branchId}/book/{bookId}")
+	public List<BookCopies> getAllLibraryBookCopies(@PathVariable Long branchId, @PathVariable Long bookId) {
+		return libraryService.readBookCopiesByBranchAndBook(branchId, bookId);
 	}
 
 	// update number of book copies
-	@PutMapping("/branches/{branchId}/bookCopies")
-	public BookCopies addBookCopiesToBranch(@RequestBody BookCopies bookCopies, @PathVariable Long branchId) {
-		//set BookCopiesKey id to branId from path
-		BookCopiesKey id = new BookCopiesKey();
-		id.setBranchId(branchId);
-		//set BookCopies branchId to branId from BookCopiesKey
+	@PutMapping("/branches/{branchId}/book/{bookId}")
+	public BookCopies addBookCopiesToBranch(@RequestBody BookCopies bookCopies, @PathVariable Long branchId, @PathVariable Long bookId) {
+		//set BookCopiesKey id to branchId and bookId from path
+		BookCopiesKey id = new BookCopiesKey(branchId, bookId);
+		//set BookCopies BookCopiesKey
 		bookCopies.setId(id);
 		return libraryService.updateBookCopies(bookCopies);
 	}

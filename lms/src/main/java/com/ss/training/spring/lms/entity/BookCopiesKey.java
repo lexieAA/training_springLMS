@@ -16,6 +16,16 @@ public class BookCopiesKey implements Serializable {
 
 	@Column(name = "branchId")
 	private Long branchId;
+	
+	public BookCopiesKey() {
+		
+	}
+
+	public BookCopiesKey(Long bookId, Long branchId) {
+		super();
+		this.bookId = bookId;
+		this.branchId = branchId;
+	}
 
 	public Long getBookId() {
 		return bookId;
