@@ -19,9 +19,9 @@ public class BookCopies implements Serializable {
 
 	@Column(name = "noOfCopies")
 	private Integer noOfCopies;
-	
+
 	public BookCopies() {
-		
+
 	}
 
 	public BookCopies(BookCopiesKey id, Integer noOfCopies) {
@@ -30,14 +30,12 @@ public class BookCopies implements Serializable {
 		this.noOfCopies = noOfCopies;
 	}
 
-
 	/**
 	 * @return the id
 	 */
 	public BookCopiesKey getId() {
 		return id;
 	}
-
 
 	/**
 	 * @param id the id to set
@@ -46,7 +44,6 @@ public class BookCopies implements Serializable {
 		this.id = id;
 	}
 
-
 	/**
 	 * @return the noOfCopies
 	 */
@@ -54,14 +51,12 @@ public class BookCopies implements Serializable {
 		return noOfCopies;
 	}
 
-
 	/**
 	 * @param noOfCopies the noOfCopies to set
 	 */
 	public void setNoOfCopies(Integer noOfCopies) {
 		this.noOfCopies = noOfCopies;
 	}
-
 
 	@Override
 	public int hashCode() {
