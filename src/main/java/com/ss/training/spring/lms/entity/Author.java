@@ -31,7 +31,7 @@ public class Author implements Serializable {
 	@Column(name = "authorName")
 	private String authorName;
 
-	@ManyToMany(mappedBy = "authors")
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "authors")
 	@JsonBackReference
 	private List<Book> books;
 	

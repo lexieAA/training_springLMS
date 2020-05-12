@@ -3,14 +3,19 @@ package com.ss.training.spring.lms.service;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.exception.DataException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ss.training.spring.lms.dao.AuthorDAO;
+import com.ss.training.spring.lms.dao.BookCopiesDAO;
 import com.ss.training.spring.lms.dao.BookDAO;
 import com.ss.training.spring.lms.dao.BorrowerDAO;
 import com.ss.training.spring.lms.dao.GenreDAO;
@@ -18,11 +23,14 @@ import com.ss.training.spring.lms.dao.LibraryBranchDAO;
 import com.ss.training.spring.lms.dao.PublisherDAO;
 import com.ss.training.spring.lms.entity.Author;
 import com.ss.training.spring.lms.entity.Book;
+import com.ss.training.spring.lms.entity.BookCopies;
+import com.ss.training.spring.lms.entity.BookCopiesKey;
 import com.ss.training.spring.lms.entity.Borrower;
 import com.ss.training.spring.lms.entity.Genre;
 import com.ss.training.spring.lms.entity.LibraryBranch;
 import com.ss.training.spring.lms.entity.Publisher;
 
+@Service
 public class AdminService {
 
 	@Autowired
@@ -43,9 +51,9 @@ public class AdminService {
 	@Autowired
 	LibraryBranchDAO lbDAO;
 
-//	@Autowired
-//	BookCopiesDAO bcDAO;
-//
+	@Autowired
+	BookCopiesDAO bcDAO;
+
 //	@Autowired
 //	BookLoanDAO blDAO;
 
@@ -175,355 +183,345 @@ public class AdminService {
 		return bDAO.findByTitle(title);
 	}
 
-//	public Integer savePublisher(Publisher publisher) {
-//
-//		try {
-//			// perform write operation depending on which object variables are set
-//			// update case where both a key and name are given
-//			if (publisher.getPublisherId() != null && publisher.getPublisherName() != null) {
-//				pDAO.updatePublisher(publisher);
-//			}
-//
-//			// deletion case when an id is given but no name
-//			else if (publisher.getPublisherId() != null) {
-//
-//				// if genre to delete doesn't exist, return error status
-//				List<Publisher> pResult = pDAO.readPublisherById(publisher.getPublisherId());
-//				if (pResult != null && pResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
-//				blDAO.conn.commit();
-//				bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
-//				bcDAO.conn.commit();
-//				bDAO.deleteBooksByPubId(publisher.getPublisherId());
-//				bDAO.conn.commit();
-//
-//				pDAO.deletePublisher(publisher);
-//				System.out.println("\nPublisher deleted");
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				Integer key = pDAO.addPublisher(publisher);
-//				pDAO.conn.commit();
-//
-//				System.out.println("Adding " + publisher.getPublisherName() + " to publishers with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			pDAO.conn.commit();
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Publisher transaction failed in AdminService");
-//			try {
-//				pDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
-//		return 0;
-//	}
-//
-//	public Integer saveBorrower(Borrower borrower) {
-//
-//		try {
-//			// perform write operation depending on which object variables are set
-//			// update case where both a key and name are given
-//			if (borrower.getCardNo() != null && borrower.getBorrowerName() != null) {
-//				borrDAO.updateBorrower(borrower);
-//			}
-//
-//			// deletion case when an id is given but no name
-//			else if (borrower.getCardNo() != null) {
-//
-//				// if borrower to delete doesn't exist, return error status
-//				List<Borrower> borrResult = borrDAO.readBorrowerById(borrower.getCardNo());
-//				if (borrResult != null && borrResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				blDAO.deleteBookLoansByCardNo(borrower.getCardNo());
-//				blDAO.conn.commit();
-//
-//				borrDAO.deleteBorrower(borrower);
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				Integer key = borrDAO.addBorrower(borrower);
-//				borrDAO.conn.commit();
-//
-//				System.out.println("Adding " + borrower.getBorrowerName() + " to borrowers with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			borrDAO.conn.commit();
-//
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Transaction failed in AdminService");
-//			try {
-//				borrDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
-//		return 0;
-//	}
-//
-//	public Integer saveGenre(Genre genre) {
-//
-//		try {
-//			// perform write operation depending on which object variables are set
-//			// update case where both a key and name are given
-//			if (genre.getGenreId() != null && genre.getGenreName() != null) {
-//				gDAO.updateGenre(genre);
-//			}
-//
-//			// deletion case when an id is given but no name
-//			else if (genre.getGenreId() != null) {
-//
-//				// if genre to delete doesn't exist, return error status
-//				List<Genre> gResult = gDAO.readGenresById(genre.getGenreId());
-//				if (gResult != null && gResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				gDAO.deleteGenre(genre);
-//
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				Integer key = gDAO.addGenre(genre);
-//				gDAO.conn.commit();
-//
-//				System.out.println("Adding " + genre.getGenreName() + " to genres with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			gDAO.conn.commit();
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Transaction failed in AdminService");
-//			try {
-//				gDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
-//		return 0;
-//	}
-//
-//	public Integer saveBranch(LibraryBranch branch) {
-//
-//		try {
-//
-//			// perform write operation depending on which object variables are set
-//			// update case where both a key and name are given
-//			if (branch.getBranchId() != null && branch.getBranchName() != null) {
-//				lbDAO.updateLibraryBranch(branch);
-//				System.out.println("Updated Branch");
-//			}
-//
-//			// deletion case when an id is given but no name
-//			else if (branch.getBranchId() != null) {
-//
-//				// if branch to delete doesn't exist, return error status
-//				List<LibraryBranch> lbResult = lbDAO.readLibraryBranchById(branch.getBranchId());
-//				if (lbResult != null && lbResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				blDAO.deleteBookLoansByBranchId(branch.getBranchId());
-//				blDAO.conn.commit();
-//				bcDAO.deleteBookCopiesByBranchId(branch.getBranchId());
-//				bcDAO.conn.commit();
-//
-//				lbDAO.deleteLibraryBranch(branch);
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				Integer key = lbDAO.addLibraryBranch(branch);
-//				lbDAO.conn.commit();
-//
-//				System.out.println("Adding " + branch.getBranchName() + " to library branches with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			lbDAO.conn.commit();
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Transaction failed in AdminService");
-//			try {
-//				lbDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
-//		return 0;
-//	}
+	public Integer savePublisher(Publisher publisher) {
 
-	public Integer saveAuthor(Author author) {
-
-		Author returnAuthor = null;
-		
 		// perform write operation depending on which object variables are set
 		// update case where both a key and name are given
-		if (author.getAuthorId() != null && author.getAuthorName() != null) {
-			 returnAuthor = aDAO.save(author);
-			 if (returnAuthor == null) return -1; 
+		if (publisher.getPublisherId() != null && publisher.getPublisherName() != null) {
+
+			// update publisher if id matches existing record
+			if (pDAO.findById(publisher.getPublisherId()).isPresent()) {
+				pDAO.save(publisher);
+			} else {
+				return -1;
+			}
+		}
+		
+		// deletion case when an id is given but no name
+		else if (publisher.getPublisherId() != null) {
+
+			// if genre to delete doesn't exist, return error status
+			if (pDAO.findById(publisher.getPublisherId()).isPresent()) {
+				try {
+//					blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
+//					bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
+					
+					pDAO.deleteById(publisher.getPublisherId());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
 		}
 
-//			// deletion case when an id is given but no name
-//			else if (author.getAuthorId() != null) {
-//
-//				// if author to delete doesn't exist, return error status
-//				List<Author> aResult = aDAO.readAuthorById(author.getAuthorId());
-//				if (aResult != null && aResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				// delete entries from all tables where authorId to be deleted is referred to
-//				blDAO.deleteBookLoansByAuthorId(author.getAuthorId());
-//				blDAO.conn.commit();
-//				bcDAO.deleteBookCopiesByAuthorId(author.getAuthorId());
-//				bcDAO.conn.commit();
-//				bDAO.deleteBooksByAuthorId(author.getAuthorId());
-//				bDAO.conn.commit();
-//
-//				aDAO.deleteAuthor(author);
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				Integer key = aDAO.addAuthor(author);
-//				aDAO.conn.commit();
-//
-//				System.out.println("Adding " + author.getAuthorName() + " to authors with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			aDAO.conn.commit();
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Transaction failed in AdminService");
-//			try {
-//				aDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
+		// insertion case otherwise
+		else {
+			// insert publisher if name doesn't match existing record
+			if (pDAO.findByPublisherName(publisher.getPublisherName()).isEmpty()) {
+				try {
+					// create the new record
+					pDAO.save(publisher);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// duplicate entry
+				return 1;
+			}
+		}
+
 		return 0;
 	}
 
-//	public Integer saveBook(Book book) {
-//
-//		try {
-//
-//			// perform write operation depending on which object variables are set
-//			// update case where both a key and name are given
-//			if (book.getBookId() != null && book.getTitle() != null) {
-//				bDAO.updateBook(book);
-//			}
-//
-//			// deletion case when an id is given but no name
-//			else if (book.getBookId() != null) {
-//
-//				// if book to delete doesn't exist, return error status
-//				List<Book> bResult = bDAO.readBookById(book.getBookId());
-//				if (bResult != null && bResult.size() == 0) {
-//					return -1;
-//				}
-//
-//				bcDAO.deleteBookCopiesByBookId(book.getBookId());
-//				bcDAO.conn.commit();
-//
-//				bDAO.deleteBook(book);
-//				System.out.println("\nBook deleted");
-//			}
-//
-//			// insertion case otherwise
-//			else {
-//				List<Author> aResult = null;
-//				List<Genre> gResult = null;
-//				Integer authorKey = -1;
-//				Integer key = bDAO.addBook(book);
-//
-//				// add authors
-//				if (book.getAuthors() != null && book.getAuthors().size() > 0) {
-//					for (Author a : book.getAuthors()) {
-//						if (a.getAuthorId() != null && a.getAuthorName() == null) {
-//							aResult = aDAO.readAuthorById(a.getAuthorId());
-//							if (aResult != null && aResult.size() > 0) {
-//								bDAO.addBookAuthorRelationship(key, a.getAuthorId());
-//							}
-//						} else if (a.getAuthorId() == null && a.getAuthorName() != null) {
-//							aResult = aDAO.readAuthorByName(a.getAuthorName());
-//							if (aResult != null && aResult.size() > 0) {
-//								bDAO.addBookAuthorRelationship(key, aResult.get(0).getAuthorId());
-//							} else {
-//								authorKey = this.addAuthor(a);
-//								if (authorKey != null & authorKey > 0) {
-//									bDAO.addBookAuthorRelationship(key, authorKey);
-//								}
-//							}
-//						}
+
+	public Integer saveBorrower(Borrower borrower) {
+
+		// perform write operation depending on which object variables are set
+		// update case where both a key and name are given
+		if (borrower.getCardNo() != null && borrower.getBorrowerName() != null) {
+
+			// update borrower if id matches existing record
+			if (borrDAO.findById(borrower.getCardNo()).isPresent()) {
+				borrDAO.save(borrower);
+			} else {
+				return -1;
+			}
+		}
+		
+		// deletion case when an id is given but no name
+		else if (borrower.getCardNo() != null) {
+
+			// if genre to delete doesn't exist, return error status
+			if (borrDAO.findById(borrower.getCardNo()).isPresent()) {
+				try {
+					
+//					blDAO.deleteBookLoansByCardNo(borrower.getCardNo());
+					borrDAO.deleteById(borrower.getCardNo());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
+		}
+
+		// insertion case otherwise
+		else {
+			// insert borrower if name doesn't match existing record
+			if (borrDAO.findByBorrowerName(borrower.getBorrowerName()).isEmpty()) {
+				try {
+					// create the new record
+					borrDAO.save(borrower);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// duplicate entry
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+
+	public Integer saveGenre(Genre genre) {
+
+		// perform write operation depending on which object variables are set
+		// update case where both a key and name are given
+		if (genre.getGenreId() != null && genre.getGenreName() != null) {
+
+			// update genre if id matches existing record
+			if (gDAO.findById(genre.getGenreId()).isPresent()) {
+				gDAO.save(genre);
+			} else {
+				return -1;
+			}
+		}
+
+		// deletion case when an id is given but no name
+		else if (genre.getGenreId() != null) {
+
+			// if genre to delete doesn't exist, return error status
+			if (gDAO.findById(genre.getGenreId()).isPresent()) {
+				try {
+					gDAO.deleteById(genre.getGenreId());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
+		}
+
+		// insertion case otherwise
+		else {
+			// insert genre if name doesn't match existing record
+			if (gDAO.findByGenreName(genre.getGenreName()).isEmpty()) {
+				try {
+					// create the new record
+					gDAO.save(genre);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// duplicate entry
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	public Integer saveLibraryBranch(LibraryBranch branch) {
+
+		// perform write operation depending on which object variables are set
+		// update case where both a key and name are given
+		if (branch.getBranchId() != null && branch.getBranchName() != null) {
+
+			// update branch if id matches existing record
+			if (lbDAO.findById(branch.getBranchId()).isPresent()) {
+				lbDAO.save(branch);
+			} else {
+				return -1;
+			}
+		}
+		
+		// deletion case when an id is given but no name
+		else if (branch.getBranchId() != null) {
+
+			// if genre to delete doesn't exist, return error status
+			if (lbDAO.findById(branch.getBranchId()).isPresent()) {
+				try {
+					
+//					blDAO.deleteBookLoansByBranchId(branch.getBranchId());
+//					bcDAO.deleteBookCopiesByBranchId(branch.getBranchId());
+					
+					
+//					List<BookCopies> result = bcDAO.findAllById(branch.getBranchId());
+//					BookCopiesKey key = new BookCopiesKey((long) 57, branch.getBranchId());
+//					Optional<BookCopies> result = bcDAO.findById(key);
+//					if (result.isPresent())	{
+//						bcDAO.delete(key);
 //					}
-//				}
-//
-//				bDAO.conn.commit();
-//
-//				// add genres
-//				if (book.getGenres() != null && book.getGenres().size() > 0) {
-//					for (Genre g : book.getGenres()) {
-//						if (g.getGenreId() != null && g.getGenreName() == null) {
-//							gResult = gDAO.readGenresById(g.getGenreId());
-//							if (gResult != null && gResult.size() > 0) {
-//								insertBookGenreRelationship(g.getGenreId(), key);
-//							}
-//						}
-//					}
-//				}
-//
-//				System.out.println("Adding " + book.getTitle() + " to books with key " + key);
-//
-//				return key;
-//			}
-//
-//			// commit transaction and display success message
-//			bDAO.conn.commit();
-//		} catch (Exception e) {
-//			// transaction failed. Rollback changes made
-//			System.out.println("Transaction failed in AdminService");
-//			try {
-//				bDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback transaction in AdminService");
-//			}
-//			return -1;
-//		}
-//		return 0;
-//	}
-//
+					
+					
+					bcDAO.deleteByIdBranchId(branch.getBranchId());
+					
+					
+//					lbDAO.deleteById(branch.getBranchId());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
+		}
+		
+		// insertion case otherwise
+		else {
+			// insert branch if name doesn't match existing record
+			if (lbDAO.findByBranchName(branch.getBranchName()).isEmpty()) {
+				try {
+					// create the new record
+					lbDAO.save(branch);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// duplicate entry
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+
+
+
+	public Integer saveAuthor(Author author) {
+
+		// perform write operation depending on which object variables are set
+		// update case where both a key and name are given
+		if (author.getAuthorId() != null && author.getAuthorName() != null) {
+
+			// update author if id matches existing record
+			if (aDAO.findById(author.getAuthorId()).isPresent()) {
+				aDAO.save(author);
+			} else {
+				return -1;
+			}
+		}
+
+		// deletion case when an id is given but no name
+		else if (author.getAuthorId() != null) {
+
+			// if author to delete doesn't exist, return error status
+			if (aDAO.findById(author.getAuthorId()).isPresent()) {
+				try {
+
+//					blDAO.deleteBookLoansByAuthorId(author.getAuthorId());
+//					bcDAO.deleteBookCopiesByAuthorId(author.getAuthorId());
+
+					aDAO.deleteById(author.getAuthorId());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
+		}
+
+		// insertion case otherwise
+		else {
+			// update author if id matches existing record
+			if (aDAO.findByAuthorName(author.getAuthorName()).isEmpty()) {
+				try {
+					// create the new record
+					aDAO.save(author);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// duplicate entry
+				return 1;
+			}
+		}
+
+		return 0;
+	}
+
+	public Integer saveBook(Book book) {
+
+		// perform write operation depending on which object variables are set
+		// update case where both a key and name are given
+		if (book.getBookId() != null && book.getTitle() != null && book.getAuthors() != null
+				&& book.getPublisher() != null) {
+
+			// perform update and check for exceptions
+			try {
+				bDAO.save(book);
+			} catch (Exception e) {
+				return -1;
+			}
+		}
+
+		// deletion case when an id is given but no name
+		else if (book.getBookId() != null) {
+
+			// if genre to delete doesn't exist, return error status
+			if (bDAO.findById(book.getBookId()).isPresent()) {
+				try {
+//					bcDAO.deleteBookCopiesByBookId(book.getBookId());
+//					blDAO.deleteBookLoansByBookId(book.getBookId());
+					bDAO.deleteById(book.getBookId());
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// not found
+				return 1;
+			}
+		}
+
+		// insertion case otherwise
+		else {
+			// update book if id matches existing record
+			if (!bDAO.findByTitle(book.getTitle()).isEmpty()) {
+				// duplicate entry
+				return 1;
+			} else if (book.getAuthors() != null && book.getPublisher() != null) {
+
+				try {
+					// create the new record
+					bDAO.save(book);
+				} catch (Exception e) {
+					// query error
+					return -1;
+				}
+			} else {
+				// invalid: necessary fields not provided
+				return -1;
+			}
+		}
+		return 0;
+	}
+
 //	public Integer addAuthor(Author a) {
 //		Integer key = -1;
 //		try {

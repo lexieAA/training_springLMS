@@ -10,6 +10,7 @@ import com.ss.training.spring.lms.entity.Author;
 public interface AuthorDAO extends JpaRepository<Author, Long> {
 
 	List<Author> findByAuthorName(String authorName);
+//	void deleteBooksByAuthorId(Long authorId);
 	
 }
 

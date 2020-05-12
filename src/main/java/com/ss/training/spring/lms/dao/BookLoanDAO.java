@@ -1,14 +1,15 @@
 //package com.ss.training.spring.lms.dao;
 //
-//import java.sql.Connection;
-//import java.sql.Date;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.util.ArrayList;
+//import org.springframework.stereotype.Repository;
 //import java.util.List;
+//import org.springframework.data.jpa.repository.JpaRepository;
 //
-//import com.ss.training.spring.lms.entity.BookLoan;
-//import com.ss.training.spring.lms.entity.Borrower;
+//@Repository
+//public interface BookLoanDAO extends JpaRepository<BookLoan, Long> {
+
+//	List<Book> findByTitle(String title);
+
+//}
 //
 //public class BookLoanDAO extends BaseDAO<BookLoan> {
 //

@@ -32,11 +32,20 @@ public interface BookDAO extends JpaRepository<Book, Long> {
 //		save("DELETE FROM tbl_book WHERE bookId = ?", new Object[] { book.getBookId() });
 //	}
 //	
+
+
+
+
+
 //	public void deleteBooksByAuthorId(Integer authorId) throws ClassNotFoundException, SQLException {
 //		save("DELETE FROM tbl_book WHERE bookId IN (SELECT bookId FROM tbl_book_authors WHERE authorId=?)",
 //				new Object[] { authorId });
 //	}
 //	
+
+
+
+
 //	public void deleteBooksByPubId(Integer pubId) throws ClassNotFoundException, SQLException {
 //		save("DELETE FROM tbl_book WHERE pubId=?", new Object[] { pubId });
 //	}

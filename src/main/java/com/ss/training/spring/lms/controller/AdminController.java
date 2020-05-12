@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -105,81 +107,97 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param author object to update
+	 * @return BAD_REQUEST if passed an invalid author id; OK if record is found and
+	 *         updated
+	 */
 	@PutMapping(path = "/authors", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> updateAuthor(@RequestBody Author author) {
 
+		Integer returnInt = -1; // for determining HttpStatus
+
 		// read authors by author id
-		try {
-			adminService.saveAuthor(author);
-		} catch (Exception e) {
+		returnInt = adminService.saveAuthor(author);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
 			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
 		}
-
-		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param author passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/authors", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createAuthor(@RequestBody Author author) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new author if request object contains the necessary information
-//		if (author != null && author.getAuthorId() == null && author.getAuthorName() != null) {
-//			returnInt = adminService.saveAuthor(author);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param authorId id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/authors/id/{authorId}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deleteAuthor(@PathVariable Integer authorId) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in
-//		// saveAuthor()
-//		Author author = new Author();
-//		author.setAuthorId(authorId);
-//		returnInt = adminService.saveAuthor(author);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
-//
-//	//
-//	//
-//	// PUBLISHER mappings ----------------------------------------------------------
-//	//
-//	//
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param author passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/authors", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createAuthor(@RequestBody Author author) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new author if request object contains the necessary information
+		if (author != null && author.getAuthorId() == null && author.getAuthorName() != null) {
+			returnInt = adminService.saveAuthor(author);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param authorId id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/authors/id/{authorId}")
+	public ResponseEntity<Integer> deleteAuthor(@PathVariable Long authorId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in saveAuthor()
+		Author author = new Author();
+		author.setAuthorId(authorId);
+		author.setAuthorName(null);
+		returnInt = adminService.saveAuthor(author);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
+
+	//
+	//
+	// PUBLISHER mappings ----------------------------------------------------------
+	//
+	//
 
 	/**
 	 * This method handles read all requests
@@ -245,76 +263,91 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(path = "/lms/admin/publishers", method = RequestMethod.PUT)
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param publisher object to update
+	 * @return BAD_REQUEST if passed an invalid publisher id; OK if record is found
+	 *         and updated
+	 */
+	@PutMapping(path = "/publishers", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> updatePublisher(@RequestBody Publisher publisher) {
 
-		// read publishers by publisher id
-//		try {
-//			adminService.savePublisher(publisher);
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
-//		}
+		Integer returnInt = -1; // for determining HttpStatus
 
-		return new ResponseEntity<String>("Success", HttpStatus.OK);
+		// read publishers by publisher id
+		returnInt = adminService.savePublisher(publisher);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
 	}
 
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param publisher passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/publishers", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createPublisher(@RequestBody Publisher publisher) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new publisher if request object contains the neccessary information
-//		if (publisher != null && publisher.getPublisherId() == null && publisher.getPublisherName() != null
-//				&& publisher.getPublisherAddress() != null && publisher.getPublisherPhone() != null) {
-//			returnInt = adminService.savePublisher(publisher);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param publisherId id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/publishers/id/{publisherId}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deletePublisher(@PathVariable Integer publisherId) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in
-//		// savePublisher()
-//		Publisher publisher = new Publisher();
-//		publisher.setPublisherId(publisherId);
-//		returnInt = adminService.savePublisher(publisher);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param publisher passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/publishers", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createPublisher(@RequestBody Publisher publisher) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new publisher if request object contains the necessary information
+		if (publisher != null && publisher.getPublisherId() == null && publisher.getPublisherName() != null) {
+			returnInt = adminService.savePublisher(publisher);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param publisherId id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/publishers/id/{publisherId}")
+	public ResponseEntity<Integer> deletePublisher(@PathVariable Long publisherId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in savePublisher()
+		Publisher publisher = new Publisher();
+		publisher.setPublisherId(publisherId);
+		publisher.setPublisherName(null);
+		returnInt = adminService.savePublisher(publisher);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -386,76 +419,91 @@ public class AdminController {
 		}
 	}
 
-//	@RequestMapping(path = "/lms/admin/borrowers", method = RequestMethod.PUT)
-//	public ResponseEntity<String> updateBorrower(@RequestBody Borrower borrower) {
-//
-//		// read borrowers by borrower id
-//		try {
-//			adminService.saveBorrower(borrower);
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
-//		}
-//
-//		return new ResponseEntity<String>("Success", HttpStatus.OK);
-//	}
-//
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param borrower passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/borrowers", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createBorrower(@RequestBody Borrower borrower) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new borrower if request object contains the necessary information
-//		if (borrower != null && borrower.getCardNo() == null && borrower.getBorrowerName() != null
-//				&& borrower.getBorrowerAddress() != null && borrower.getBorrowerPhone() != null) {
-//			returnInt = adminService.saveBorrower(borrower);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param cardNo id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/borrowers/cardNo/{cardNo}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deleteBorrower(@PathVariable Integer cardNo) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in
-//		// saveBorrower()
-//		Borrower borrower = new Borrower();
-//		borrower.setCardNo(cardNo);
-//		returnInt = adminService.saveBorrower(borrower);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param borrower object to update
+	 * @return BAD_REQUEST if passed an invalid card no; OK if record is found and
+	 *         updated
+	 */
+	@PutMapping(path = "/borrowers", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> updateBorrower(@RequestBody Borrower borrower) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// read borrowers by borrower cardno
+		returnInt = adminService.saveBorrower(borrower);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param borrower passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/borrowers", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createBorrower(@RequestBody Borrower borrower) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new borrower if request object contains the necessary information
+		if (borrower != null && borrower.getCardNo() == null && borrower.getBorrowerName() != null) {
+			returnInt = adminService.saveBorrower(borrower);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param cardNo id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/borrowers/cardno/{cardNo}")
+	public ResponseEntity<Integer> deleteBorrower(@PathVariable Long cardNo) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in saveBorrower()
+		Borrower borrower = new Borrower();
+		borrower.setCardNo(cardNo);
+		borrower.setBorrowerName(null);
+		returnInt = adminService.saveBorrower(borrower);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -527,74 +575,91 @@ public class AdminController {
 		}
 	}
 
-//	@RequestMapping(path = "/lms/admin/genres", method = RequestMethod.PUT)
-//	public ResponseEntity<String> updateGenre(@RequestBody Genre genre) {
-//
-//		// read genres by genre id
-//		try {
-//			adminService.saveGenre(genre);
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
-//		}
-//
-//		return new ResponseEntity<String>("Success", HttpStatus.OK);
-//	}
-//
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param genre passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/genres", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createGenre(@RequestBody Genre genre) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new genre if request object contains the neccessary information
-//		if (genre != null && genre.getGenreId() == null && genre.getGenreName() != null) {
-//			returnInt = adminService.saveGenre(genre);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param genreId id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/genres/id/{genreId}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deleteGenre(@PathVariable Integer genreId) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in saveGenre()
-//		Genre genre = new Genre();
-//		genre.setGenreId(genreId);
-//		returnInt = adminService.saveGenre(genre);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param genre object to update
+	 * @return BAD_REQUEST if passed an invalid card no; OK if record is found and
+	 *         updated
+	 */
+	@PutMapping(path = "/genres", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> updateGenre(@RequestBody Genre genre) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// read genres by genre cardno
+		returnInt = adminService.saveGenre(genre);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param genre passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/genres", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createGenre(@RequestBody Genre genre) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new genre if request object contains the necessary information
+		if (genre != null && genre.getGenreId() == null && genre.getGenreName() != null) {
+			returnInt = adminService.saveGenre(genre);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param genreId id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/genres/id/{genreId}")
+	public ResponseEntity<Integer> deleteGenre(@PathVariable Long genreId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in saveGenre()
+		Genre genre = new Genre();
+		genre.setGenreId(genreId);
+		genre.setGenreName(null);
+		returnInt = adminService.saveGenre(genre);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 
 	//
 	//
@@ -667,82 +732,97 @@ public class AdminController {
 		}
 	}
 
-//	@RequestMapping(path = "/lms/admin/branches", method = RequestMethod.PUT)
-//	public ResponseEntity<String> updateBranch(@RequestBody LibraryBranch branch) {
-//
-//		// read branches by branch id
-//		try {
-//			adminService.saveBranch(branch);
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
-//		}
-//
-//		return new ResponseEntity<String>("Success", HttpStatus.OK);
-//	}
-//
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param branch passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/branches", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createBranch(@RequestBody LibraryBranch branch) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new branch if request object contains the necessary information
-//		if (branch != null && branch.getBranchId() == null && branch.getBranchName() != null
-//				&& branch.getBranchAddress() != null) {
-//			returnInt = adminService.saveBranch(branch);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param branchId id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/branches/id/{branchId}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deleteBranch(@PathVariable Integer branchId) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in
-//		// saveBranch()
-//		LibraryBranch branch = new LibraryBranch();
-//		branch.setBranchId(branchId);
-//		returnInt = adminService.saveBranch(branch);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
-//
-//	//
-//	//
-//	// BOOK mappings ----------------------------------------------------------
-//	//
-//	//
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param branch object to update
+	 * @return BAD_REQUEST if passed an invalid card no; OK if record is found and
+	 *         updated
+	 */
+	@PutMapping(path = "/branches", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> updateLibraryBranch(@RequestBody LibraryBranch branch) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// read LibraryBranches by branch id
+		returnInt = adminService.saveLibraryBranch(branch);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param branch passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/branches", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createBranch(@RequestBody LibraryBranch branch) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new branch if request object contains the necessary information
+		if (branch != null && branch.getBranchId() == null && branch.getBranchName() != null) {
+			returnInt = adminService.saveLibraryBranch(branch);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param branchId id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/branches/id/{branchId}")
+	public ResponseEntity<Integer> deleteLibaryBranch(@PathVariable Long branchId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in saveLibaryBranch()
+		LibraryBranch branch = new LibraryBranch();
+		branch.setBranchId(branchId);
+		branch.setBranchName(null);
+		returnInt = adminService.saveLibraryBranch(branch);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
+
+	//
+	//
+	// BOOK mappings ----------------------------------------------------------
+	//
+	//
 
 	/**
 	 * This method handles read all requests
@@ -808,83 +888,99 @@ public class AdminController {
 		}
 	}
 
-//	@RequestMapping(path = "/lms/admin/books", method = RequestMethod.PUT)
-//	public ResponseEntity<String> updateBook(@RequestBody Book book) {
-//
-//		// read books by book id
-//		try {
-//			adminService.saveBook(book);
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
-//		}
-//
-//		return new ResponseEntity<String>("Success", HttpStatus.OK);
-//	}
-//
-//	/**
-//	 * This method handles post requests for the passed object type. This case is
-//	 * for the creation of a new object. The primary key value should be null in the
-//	 * passed request object.
-//	 * 
-//	 * @param book passed object from client
-//	 * @return -1 indicating failure; positive Integer indicating success, with the
-//	 *         value being the key created
-//	 */
-//	@RequestMapping(path = "/lms/admin/books", method = RequestMethod.POST)
-//	public ResponseEntity<Integer> createBook(@RequestBody Book book) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create new book if request object contains the necessary information
-//		if (book != null && book.getBookId() == null && book.getTitle() != null && book.getPublisherId() != null
-//				&& book.getAuthors() != null) {
-//			returnInt = adminService.saveBook(book);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
-//		}
-//	}
-//
-//	/**
-//	 * This method handles delete requests for the specified id.
-//	 * 
-//	 * @param bookId id of object to delete
-//	 * @return BAD_REQUEST indicating failure when id delete not found; OK
-//	 *         indicating success
-//	 */
-//	@RequestMapping(path = "/lms/admin/books/id/{bookId}", method = RequestMethod.DELETE)
-//	public ResponseEntity<Integer> deleteBook(@PathVariable Integer bookId) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// create an object with an id and null name to indicate a delete in saveBook()
-//		Book book = new Book();
-//		book.setBookId(bookId);
-//		returnInt = adminService.saveBook(book);
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
-//
-//	//
-//	//
-//	// BOOKLOAN mappings ----------------------------------------------------------
-//	//
-//	//
-//
-//	@RequestMapping(path = "/lms/admin/loans", method = RequestMethod.PUT)
+	/**
+	 * This method handles update requests for the specified id
+	 * 
+	 * @param book object to update
+	 * @return BAD_REQUEST if passed an invalid card no; OK if record is found and
+	 *         updated
+	 */
+	@PutMapping(path = "/books", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> updateBook(@RequestBody Book book) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// read books by book id
+		returnInt = adminService.saveBook(book);
+
+		// indicate success or failure
+		if (returnInt == 0) {
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * This method handles post requests for the passed object type. This case is
+	 * for the creation of a new object. The primary key value should be null in the
+	 * passed request object.
+	 * 
+	 * @param book passed object from client
+	 * @return BAD_REQUEST (-1) indicating failure; CONFLICT (1) indicating
+	 *         duplicate; CREATED (0) indicating success
+	 */
+	@PostMapping(path = "/books", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> createBook(@RequestBody Book book) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create new book if request object contains the necessary information
+		if (book != null && book.getBookId() == null && book.getTitle() != null) {
+			returnInt = adminService.saveBook(book);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// already exists, return conflict status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CONFLICT);
+		} else {
+			// success in creating a new record, return created status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.CREATED);
+		}
+	}
+
+	/**
+	 * This method handles delete requests for the specified id.
+	 * 
+	 * @param bookId id of object to delete
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
+	 *         delete not found; OK (0) indicating successful deletion
+	 */
+	@DeleteMapping(path = "/books/id/{bookId}")
+	public ResponseEntity<Integer> deleteBook(@PathVariable Long bookId) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// create an object with an id and null name to indicate a delete in saveBook()
+		Book book = new Book();
+		book.setBookId(bookId);
+		book.setTitle(null);
+		returnInt = adminService.saveBook(book);
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// id to delete not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in deleting record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
+
+	//
+	//
+	// BOOKLOAN mappings ----------------------------------------------------------
+	//
+	//
+
+//	@PutMapping(path = "/lms/admin/loans", consumes = { MediaType.APPLICATION_JSON_VALUE })
 //	public ResponseEntity<Integer> extendLoan(@RequestBody BookLoan loan) {
 //
 //		Integer returnInt = -1; // for determining HttpStatus

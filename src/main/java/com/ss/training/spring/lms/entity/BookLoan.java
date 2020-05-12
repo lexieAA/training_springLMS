@@ -1,11 +1,12 @@
-///**
-// * 
-// */
 //package com.ss.training.spring.lms.entity;
 //
 //import java.io.Serializable;
-//import java.sql.Date;
 //
+//import javax.persistence.Entity;
+//import javax.persistence.Table;
+//
+//@Entity
+//@Table(name = "tbl_book_loans")
 //public class BookLoan implements Serializable {
 //
 //	/**

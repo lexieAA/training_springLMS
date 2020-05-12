@@ -37,20 +37,18 @@ public class Book implements Serializable {
 	@JoinTable(name = "tbl_book_authors", 
 		joinColumns = @JoinColumn(name = "bookId"), 
 		inverseJoinColumns = @JoinColumn(name = "authorId"))
-//	@JsonManagedReference
 	private List<Author> authors;
 
 	@ManyToMany
 	@JoinTable(name = "tbl_book_genres", 
 		joinColumns = @JoinColumn(name = "bookId"), 
 		inverseJoinColumns = @JoinColumn(name = "genre_id"))
-//	@JsonManagedReference
 	private List<Genre> genres;
 
-//	@ManyToOne
-//	@JoinColumn(name = "pubId", nullable = false)
-//	private Publisher publisher;
-//
+	@ManyToOne
+	@JoinColumn(name = "pubId", nullable = false)
+	private Publisher publisher;
+
 //	@OneToMany(mappedBy = "book")
 //	private List<BookCopies> bookLoans;
 //
@@ -89,14 +87,14 @@ public class Book implements Serializable {
 		this.genres = genres;
 	}
 
-//	public Publisher getPublisher() {
-//		return publisher;
-//	}
-//
-//	public void setPublisher(Publisher publisher) {
-//		this.publisher = publisher;
-//	}
-//
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
 //	public List<BookCopies> getBookLoans() {
 //		return bookLoans;
 //	}
