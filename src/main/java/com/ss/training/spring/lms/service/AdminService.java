@@ -487,7 +487,6 @@ public class AdminService {
 			if (bDAO.findById(book.getBookId()).isPresent()) {
 				try {
 //					bcDAO.deleteBookCopiesByBookId(book.getBookId());
-//					blDAO.deleteBookLoansByBookId(book.getBookId());
 					bDAO.deleteById(book.getBookId());
 				} catch (Exception e) {
 					// query error

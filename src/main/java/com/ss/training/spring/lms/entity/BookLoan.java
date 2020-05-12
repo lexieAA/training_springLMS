@@ -26,7 +26,7 @@ public class BookLoan implements Serializable {
 	@ManyToOne
 	@MapsId("id")
 	@JoinColumn(name = "bookid")
-//	@JsonBackReference
+	@JsonBackReference
 	private Book book;
 
 	@ManyToOne
