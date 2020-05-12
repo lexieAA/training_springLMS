@@ -11,9 +11,8 @@ import com.ss.training.spring.lms.entity.BookCopiesKey;
 
 @Repository
 public interface BookCopiesDAO extends JpaRepository<BookCopies, BookCopiesKey> {
-//	List<BookCopies> findByIdBranchId(Long branchId);
-//	void delete(BookCopiesKey id);
-//
-//	Optional<BookCopies> findById(BookCopiesKey id);
-	Long deleteByIdBranchId(Long branchId);
+	List<BookCopies> findByIdBranchId(Long branchId);
+	void deleteById(BookCopiesKey id);
+
+	Optional<BookCopies> findById(BookCopiesKey id);
 }

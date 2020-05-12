@@ -1,165 +1,116 @@
-//package com.ss.training.spring.lms.entity;
-//
-//import java.io.Serializable;
-//
-//import javax.persistence.Entity;
-//import javax.persistence.Table;
-//
-//@Entity
-//@Table(name = "tbl_book_loans")
-//public class BookLoan implements Serializable {
-//
-//	/**
-//	 * 
-//	 */
-//	private static final long serialVersionUID = -4619397352657092500L;
-//	/**
-//	 * 
-//	 */
-//	private Integer bookId;
-//	private Integer branchId;
-//	private Integer cardNo;
-//	private String dateOut;
-//	private String dueDate;
-//	private String dateIn;
-//
-//	/**
-//	 * @return the bookId
-//	 */
-//	public Integer getBookId() {
-//		return bookId;
-//	}
-//
-//	/**
-//	 * @param bookId the bookId to set
-//	 */
-//	public void setBookId(Integer bookId) {
-//		this.bookId = bookId;
-//	}
-//
-//	/**
-//	 * @return the branchId
-//	 */
-//	public Integer getBranchId() {
-//		return branchId;
-//	}
-//
-//	/**
-//	 * @param branchId the branchId to set
-//	 */
-//	public void setBranchId(Integer branchId) {
-//		this.branchId = branchId;
-//	}
-//
-//	/**
-//	 * @return the dateOut
-//	 */
-//	public String getDateOut() {
-//		return dateOut;
-//	}
-//
-//	/**
-//	 * @param dateOut the dateOut to set
-//	 */
-//	public void setDateOut(String dateOut) {
-//		this.dateOut = dateOut;
-//	}
-//
-//	/**
-//	 * @return the dueDate
-//	 */
-//	public String getDueDate() {
-//		return dueDate;
-//	}
-//
-//	/**
-//	 * @param dueDate the dueDate to set
-//	 */
-//	public void setDueDate(String dueDate) {
-//		this.dueDate = dueDate;
-//	}
-//
-//	/**
-//	 * @return the dateIn
-//	 */
-//	public String getDateIn() {
-//		return dateIn;
-//	}
-//
-//	/**
-//	 * @param dateIn the dateIn to set
-//	 */
-//	public void setDateIn(String dateIn) {
-//		this.dateIn = dateIn;
-//	}
-//
-//	/**
-//	 * @return the cardNo
-//	 */
-//	public Integer getCardNo() {
-//		return cardNo;
-//	}
-//
-//	/**
-//	 * @param cardNo the cardNo to set
-//	 */
-//	public void setCardNo(Integer cardNo) {
-//		this.cardNo = cardNo;
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
-//		result = prime * result + ((branchId == null) ? 0 : branchId.hashCode());
-//		result = prime * result + ((cardNo == null) ? 0 : cardNo.hashCode());
-//		result = prime * result + ((dateIn == null) ? 0 : dateIn.hashCode());
-//		result = prime * result + ((dateOut == null) ? 0 : dateOut.hashCode());
-//		result = prime * result + ((dueDate == null) ? 0 : dueDate.hashCode());
-//		return result;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		BookLoan other = (BookLoan) obj;
-//		if (bookId == null) {
-//			if (other.bookId != null)
-//				return false;
-//		} else if (!bookId.equals(other.bookId))
-//			return false;
-//		if (branchId == null) {
-//			if (other.branchId != null)
-//				return false;
-//		} else if (!branchId.equals(other.branchId))
-//			return false;
-//		if (cardNo == null) {
-//			if (other.cardNo != null)
-//				return false;
-//		} else if (!cardNo.equals(other.cardNo))
-//			return false;
-//		if (dateIn == null) {
-//			if (other.dateIn != null)
-//				return false;
-//		} else if (!dateIn.equals(other.dateIn))
-//			return false;
-//		if (dateOut == null) {
-//			if (other.dateOut != null)
-//				return false;
-//		} else if (!dateOut.equals(other.dateOut))
-//			return false;
-//		if (dueDate == null) {
-//			if (other.dueDate != null)
-//				return false;
-//		} else if (!dueDate.equals(other.dueDate))
-//			return false;
-//		return true;
-//	}
-//
-//}
+package com.ss.training.spring.lms.entity;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name = "tbl_book_loans")
+public class BookLoan implements Serializable {
+
+	private static final long serialVersionUID = -326651163829760200L;
+
+	@EmbeddedId
+	BookLoansKey id;
+
+	@ManyToOne
+	@MapsId("id")
+	@JoinColumn(name = "bookid")
+//	@JsonBackReference
+	private Book book;
+
+	@ManyToOne
+	@MapsId("id")
+	@JoinColumn(name = "branchid")
+//	@JsonBackReference
+	private LibraryBranch branch;
+
+	@ManyToOne
+	@MapsId("id")
+	@JoinColumn(name = "cardno")
+//	@JsonBackReference
+	private Borrower borrower;
+
+	@Column(name = "duedate", columnDefinition = "DATE")
+	private LocalDate dueDate;
+
+	@Column(name = "datein", columnDefinition = "DATE")
+	private LocalDate dateIn;
+
+	public BookLoansKey getId() {
+		return id;
+	}
+
+	public LocalDate getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(LocalDate dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public LocalDate getDateIn() {
+		return dateIn;
+	}
+
+	public void setDateIn(LocalDate dateIn) {
+		this.dateIn = dateIn;
+	}
+
+	public void setId(BookLoansKey id) {
+		this.id = id;
+	}
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	public LibraryBranch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(LibraryBranch branch) {
+		this.branch = branch;
+	}
+
+	public Borrower getBorrower() {
+		return borrower;
+	}
+
+	public void setBorrower(Borrower borrower) {
+		this.borrower = borrower;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof BookLoan)) {
+			return false;
+		}
+		BookLoan other = (BookLoan) obj;
+		return Objects.equals(id, other.id);
+	}
+
+}

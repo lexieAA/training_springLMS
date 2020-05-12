@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transaction;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.exception.DataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -196,7 +196,7 @@ public class AdminService {
 				return -1;
 			}
 		}
-		
+
 		// deletion case when an id is given but no name
 		else if (publisher.getPublisherId() != null) {
 
@@ -205,7 +205,7 @@ public class AdminService {
 				try {
 //					blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
 //					bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
-					
+
 					pDAO.deleteById(publisher.getPublisherId());
 				} catch (Exception e) {
 					// query error
@@ -237,7 +237,6 @@ public class AdminService {
 		return 0;
 	}
 
-
 	public Integer saveBorrower(Borrower borrower) {
 
 		// perform write operation depending on which object variables are set
@@ -251,14 +250,14 @@ public class AdminService {
 				return -1;
 			}
 		}
-		
+
 		// deletion case when an id is given but no name
 		else if (borrower.getCardNo() != null) {
 
 			// if genre to delete doesn't exist, return error status
 			if (borrDAO.findById(borrower.getCardNo()).isPresent()) {
 				try {
-					
+
 //					blDAO.deleteBookLoansByCardNo(borrower.getCardNo());
 					borrDAO.deleteById(borrower.getCardNo());
 				} catch (Exception e) {
@@ -289,7 +288,6 @@ public class AdminService {
 		}
 		return 0;
 	}
-
 
 	public Integer saveGenre(Genre genre) {
 
@@ -354,31 +352,22 @@ public class AdminService {
 				return -1;
 			}
 		}
-		
+
 		// deletion case when an id is given but no name
 		else if (branch.getBranchId() != null) {
 
 			// if genre to delete doesn't exist, return error status
 			if (lbDAO.findById(branch.getBranchId()).isPresent()) {
 				try {
+
 					
+
 //					blDAO.deleteBookLoansByBranchId(branch.getBranchId());
-//					bcDAO.deleteBookCopiesByBranchId(branch.getBranchId());
-					
-					
-//					List<BookCopies> result = bcDAO.findAllById(branch.getBranchId());
-//					BookCopiesKey key = new BookCopiesKey((long) 57, branch.getBranchId());
-//					Optional<BookCopies> result = bcDAO.findById(key);
-//					if (result.isPresent())	{
-//						bcDAO.delete(key);
-//					}
-					
-					
-					bcDAO.deleteByIdBranchId(branch.getBranchId());
-					
-					
+					deleteBookCopiesByBranchId(branch.getBranchId());
+
 //					lbDAO.deleteById(branch.getBranchId());
 				} catch (Exception e) {
+					e.printStackTrace();
 					// query error
 					return -1;
 				}
@@ -387,7 +376,7 @@ public class AdminService {
 				return 1;
 			}
 		}
-		
+
 		// insertion case otherwise
 		else {
 			// insert branch if name doesn't match existing record
@@ -406,9 +395,20 @@ public class AdminService {
 		}
 		return 0;
 	}
+	
+	public Integer deleteBookCopiesByBranchId(Long branchId) 	{
+		
+		List<BookCopies> result = bcDAO.findByIdBranchId(branchId);
 
-
-
+		if (result != null && !result.isEmpty()) {
+			for (BookCopies copy : result) {
+				bcDAO.deleteById(copy.getId());
+			}
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 
 	public Integer saveAuthor(Author author) {
 

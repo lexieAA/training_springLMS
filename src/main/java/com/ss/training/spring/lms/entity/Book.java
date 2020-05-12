@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,10 +51,10 @@ public class Book implements Serializable {
 	private Publisher publisher;
 
 //	@OneToMany(mappedBy = "book")
-//	private List<BookCopies> bookLoans;
-//
-//	@OneToMany(mappedBy = "book")
-//	private List<BookLoan> bookCopies;
+//	private List<BookCopies> bookCopies;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
+	private List<BookLoan> bookLoans;
 
 	public Long getBookId() {
 		return bookId;
@@ -95,21 +96,21 @@ public class Book implements Serializable {
 		this.publisher = publisher;
 	}
 
-//	public List<BookCopies> getBookLoans() {
-//		return bookLoans;
-//	}
-//
-//	public void setBookLoans(List<BookCopies> bookLoans) {
-//		this.bookLoans = bookLoans;
-//	}
-//
-//	public List<BookLoan> getBookCopies() {
+//	public List<BookCopies> getBookCopies() {
 //		return bookCopies;
 //	}
 //
-//	public void setBookCopies(List<BookLoan> bookCopies) {
+//	public void setBookCopies(List<BookCopies> bookCopies) {
 //		this.bookCopies = bookCopies;
 //	}
+
+	public List<BookLoan> getBookLoans() {
+		return bookLoans;
+	}
+
+	public void setBookLoans(List<BookLoan> bookLoans) {
+		this.bookLoans = bookLoans;
+	}
 
 	@Override
 	public int hashCode() {
@@ -127,5 +128,7 @@ public class Book implements Serializable {
 		Book other = (Book) obj;
 		return Objects.equals(bookId, other.bookId);
 	}
+
+
 
 }
