@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ss.training.spring.lms.entity.Author;
 import com.ss.training.spring.lms.entity.Book;
 import com.ss.training.spring.lms.entity.BookLoan;
@@ -50,9 +54,10 @@ public class AdminController {
 	 * 
 	 * @return NOT_FOUND if no results; OK indicating success
 	 */
-	@GetMapping(path = "/authors")
+	@GetMapping(path = "/authors", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Author>> getAllAuthors() {
-
 		// read all authors
 		List<Author> authors = adminService.findAllAuthors();
 

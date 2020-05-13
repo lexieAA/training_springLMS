@@ -16,20 +16,9 @@
 //@SpringBootTest
 //class LmsApplicationTests {
 //	
-//	@Autowired
-//	private AuthorDAO aDAO;
-//	
 //	@Test
 //	void contextLoads() {
 //	}
 //	
-//	
-//
-//	@Test
-//	public void findAllAuthors()	{
-//		
-//		
-//		assertNotNull(aDAO.findAll());
-//	}
 //
 //}
