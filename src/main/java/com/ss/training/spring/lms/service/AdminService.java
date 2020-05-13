@@ -1,6 +1,7 @@
 package com.ss.training.spring.lms.service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ss.training.spring.lms.dao.AuthorDAO;
 import com.ss.training.spring.lms.dao.BookCopiesDAO;
 import com.ss.training.spring.lms.dao.BookDAO;
+import com.ss.training.spring.lms.dao.BookLoanDAO;
 import com.ss.training.spring.lms.dao.BorrowerDAO;
 import com.ss.training.spring.lms.dao.GenreDAO;
 import com.ss.training.spring.lms.dao.LibraryBranchDAO;
@@ -25,6 +27,8 @@ import com.ss.training.spring.lms.entity.Author;
 import com.ss.training.spring.lms.entity.Book;
 import com.ss.training.spring.lms.entity.BookCopies;
 import com.ss.training.spring.lms.entity.BookCopiesKey;
+import com.ss.training.spring.lms.entity.BookLoan;
+import com.ss.training.spring.lms.entity.BookLoansKey;
 import com.ss.training.spring.lms.entity.Borrower;
 import com.ss.training.spring.lms.entity.Genre;
 import com.ss.training.spring.lms.entity.LibraryBranch;
@@ -54,8 +58,8 @@ public class AdminService {
 	@Autowired
 	BookCopiesDAO bcDAO;
 
-//	@Autowired
-//	BookLoanDAO blDAO;
+	@Autowired
+	BookLoanDAO blDAO;
 
 	/**
 	 * Returns all authors
@@ -203,9 +207,6 @@ public class AdminService {
 			// if genre to delete doesn't exist, return error status
 			if (pDAO.findById(publisher.getPublisherId()).isPresent()) {
 				try {
-//					blDAO.deleteBookLoansByPubId(publisher.getPublisherId());
-//					bcDAO.deleteBookCopiesByPubId(publisher.getPublisherId());
-
 					pDAO.deleteById(publisher.getPublisherId());
 				} catch (Exception e) {
 					// query error
@@ -257,8 +258,6 @@ public class AdminService {
 			// if genre to delete doesn't exist, return error status
 			if (borrDAO.findById(borrower.getCardNo()).isPresent()) {
 				try {
-
-//					blDAO.deleteBookLoansByCardNo(borrower.getCardNo());
 					borrDAO.deleteById(borrower.getCardNo());
 				} catch (Exception e) {
 					// query error
@@ -359,15 +358,9 @@ public class AdminService {
 			// if genre to delete doesn't exist, return error status
 			if (lbDAO.findById(branch.getBranchId()).isPresent()) {
 				try {
-
-					
-
-//					blDAO.deleteBookLoansByBranchId(branch.getBranchId());
-					deleteBookCopiesByBranchId(branch.getBranchId());
-
-//					lbDAO.deleteById(branch.getBranchId());
+//					deleteBookCopiesByBranchId(branch.getBranchId());
+					lbDAO.deleteById(branch.getBranchId());
 				} catch (Exception e) {
-					e.printStackTrace();
 					// query error
 					return -1;
 				}
@@ -395,20 +388,6 @@ public class AdminService {
 		}
 		return 0;
 	}
-	
-	public Integer deleteBookCopiesByBranchId(Long branchId) 	{
-		
-		List<BookCopies> result = bcDAO.findByIdBranchId(branchId);
-
-		if (result != null && !result.isEmpty()) {
-			for (BookCopies copy : result) {
-				bcDAO.deleteById(copy.getId());
-			}
-			return 0;
-		} else {
-			return -1;
-		}
-	}
 
 	public Integer saveAuthor(Author author) {
 
@@ -430,10 +409,6 @@ public class AdminService {
 			// if author to delete doesn't exist, return error status
 			if (aDAO.findById(author.getAuthorId()).isPresent()) {
 				try {
-
-//					blDAO.deleteBookLoansByAuthorId(author.getAuthorId());
-//					bcDAO.deleteBookCopiesByAuthorId(author.getAuthorId());
-
 					aDAO.deleteById(author.getAuthorId());
 				} catch (Exception e) {
 					// query error
@@ -486,7 +461,6 @@ public class AdminService {
 			// if genre to delete doesn't exist, return error status
 			if (bDAO.findById(book.getBookId()).isPresent()) {
 				try {
-//					bcDAO.deleteBookCopiesByBookId(book.getBookId());
 					bDAO.deleteById(book.getBookId());
 				} catch (Exception e) {
 					// query error
@@ -521,97 +495,51 @@ public class AdminService {
 		return 0;
 	}
 
-//	public Integer addAuthor(Author a) {
-//		Integer key = -1;
-//		try {
-//			key = aDAO.addAuthor(a);
-//			aDAO.conn.commit();
-//		} catch (Exception e) {
-//			System.out.println("Add author failed");
-//			try {
-//				aDAO.conn.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Could not rollback author query");
-//			}
-//		}
-//		return key;
-//	}
-//
-//	public void insertBookGenreRelationship(Integer genreId, Integer bookId) throws SQLException {
-//		try {
-//			gDAO.addBookGenreRelationship(genreId, bookId);
-//
-//			// commit transaction and display success message
-//			gDAO.conn.commit();
-//		} catch (ClassNotFoundException | SQLException e) {
-//
-//			// transaction failed. Rollback changes made
-//			System.out.println("Book/Genre insertion failed in AdminService");
-//			gDAO.conn.rollback();
-//		}
-//	}
-//
-//	public Integer extendBookLoan(BookLoan bookLoan) {
-//
-//		boolean found = false;
-//		LocalDateTime dateTimeDueDate = null;
-//		LocalDateTime dateTimeDueDateExtended = null;
-//		String strDueDateExtended = null;
-//
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-//		LocalDateTime dateTimeNow = LocalDateTime.now();
-//		String strDateTimeNow = dateTimeNow.format(formatter);
-//
-//		try {
-//			// if book to delete doesn't exist, return error status
-//			List<BookLoan> blResult = blDAO.readBookLoansDue(strDateTimeNow);
-//
-//			if (blResult != null && blResult.size() > 0) {
-//				for (BookLoan bl : blResult) {
-//					if (bl.getBookId() == bookLoan.getBookId() && bl.getCardNo() == bookLoan.getCardNo()
-//							&& bl.getDueDate().equals(bookLoan.getDueDate())) {
-//						found = true;
-//						bookLoan = bl;
-//						System.out.println("Matching overdue book found");
-//						break;
-//					}
-//				}
-//				if (found == false) {
-//					return -1;
-//				}
-//			}
-//
-//			dateTimeDueDate = LocalDateTime.parse(bookLoan.getDueDate(), formatter);
-//			dateTimeDueDateExtended = dateTimeDueDate.plusDays(7);
-//			strDueDateExtended = dateTimeDueDateExtended.format(formatter);
-//
-//			updateDueDate(bookLoan, strDueDateExtended);
-//		} catch (Exception e) {
-//			System.out.println("updateDueDate failed");
-//			return -1;
-//		}
-//
-//		System.out.println("\nThe new extended due date is: " + strDueDateExtended);
-//		return 0;
-//	}
-//
-//	public void updateDueDate(BookLoan loan, String newDate) throws SQLException {
-//
-//		try {
-//
-//			blDAO.updateBookLoan(loan.getBookId(), loan.getBranchId(), loan.getCardNo(), loan.getDateOut(), newDate);
-//
-//			// commit transaction and display success message
-//			blDAO.conn.commit();
-//
-//		} catch (ClassNotFoundException | SQLException e) {
-//
-//			// transaction failed. Rollback changes made
-//			System.out.println("Due date update failed in AdminService");
-//			blDAO.conn.rollback();
-//		}
-//
-//	}
+	public Integer deleteBookCopiesByBranchId(Long branchId) {
+
+		List<BookCopies> result = bcDAO.findByIdBranchId(branchId);
+
+		if (result != null && !result.isEmpty()) {
+			for (BookCopies copy : result) {
+				bcDAO.deleteById(copy.getId());
+			}
+			return 0;
+		} else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * This method extends a current loan due date by 7 days
+	 * 
+	 * @param loanKey id for loan to extend
+	 * @return 0 for success; 1 if loan not found; -1 for query error
+	 */
+	public Integer extendBookLoan(BookLoansKey loanKey) {
+
+		LocalDate dueDate = null; // current due date
+		LocalDate dueDateExtended = null; // due date + 7 day extension
+
+		try {
+			// look for book by loan key
+			Optional<BookLoan> loan = blDAO.findById(loanKey);
+			
+			// if the loan is valid, extend the due date 7 days
+			if (loan != null && loan.isPresent() && loan.get().getDateIn() == null) {
+				dueDate = loan.get().getDueDate();
+				dueDateExtended = dueDate.plusDays(7);
+				loan.get().setDueDate(dueDateExtended);
+				blDAO.save(loan.get());
+			} else {
+				// loan not found
+				return 1;
+			}
+		} catch (Exception e) {
+			// query error
+			return -1;
+		}
+		// success
+		return 0;
+	}
 
 }

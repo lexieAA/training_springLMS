@@ -1,13 +1,18 @@
 package com.ss.training.spring.lms.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "tbl_library_branch")
@@ -15,7 +20,11 @@ public class LibraryBranch implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3419883909722235308L;
+	private static final long serialVersionUID = -2251924269768951050L;
+
+	/**
+	 * 
+	 */
 
 	@Id
 	@Column(name = "branchId")
@@ -27,53 +36,61 @@ public class LibraryBranch implements Serializable {
 
 	@Column(name = "branchAddress")
 	private String branchAddress;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
+	@JsonBackReference(value="branchCopies")
+	private List<BookCopies> bookCopies;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
+	@JsonBackReference(value="branchLoan")
+	private List<BookLoan> bookLoan;
 
-	/**
-	 * @return the branchId
-	 */
 	public Long getBranchId() {
 		return branchId;
 	}
 
-	/**
-	 * @param branchId the branchId to set
-	 */
 	public void setBranchId(Long branchId) {
 		this.branchId = branchId;
 	}
 
-	/**
-	 * @return the branchName
-	 */
 	public String getBranchName() {
 		return branchName;
 	}
 
-	/**
-	 * @param branchName the branchName to set
-	 */
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
 	}
 
-	/**
-	 * @return the branchAddress
-	 */
 	public String getBranchAddress() {
 		return branchAddress;
 	}
 
-	/**
-	 * @param branchAddress the branchAddress to set
-	 */
 	public void setBranchAddress(String branchAddress) {
 		this.branchAddress = branchAddress;
+	}
+
+	public List<BookCopies> getBookCopies() {
+		return bookCopies;
+	}
+
+	public void setBookCopies(List<BookCopies> bookCopies) {
+		this.bookCopies = bookCopies;
+	}
+
+	public List<BookLoan> getBookLoan() {
+		return bookLoan;
+	}
+
+	public void setBookLoan(List<BookLoan> bookLoan) {
+		this.bookLoan = bookLoan;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((bookCopies == null) ? 0 : bookCopies.hashCode());
+		result = prime * result + ((bookLoan == null) ? 0 : bookLoan.hashCode());
 		result = prime * result + ((branchAddress == null) ? 0 : branchAddress.hashCode());
 		result = prime * result + ((branchId == null) ? 0 : branchId.hashCode());
 		result = prime * result + ((branchName == null) ? 0 : branchName.hashCode());
@@ -89,6 +106,16 @@ public class LibraryBranch implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		LibraryBranch other = (LibraryBranch) obj;
+		if (bookCopies == null) {
+			if (other.bookCopies != null)
+				return false;
+		} else if (!bookCopies.equals(other.bookCopies))
+			return false;
+		if (bookLoan == null) {
+			if (other.bookLoan != null)
+				return false;
+		} else if (!bookLoan.equals(other.bookLoan))
+			return false;
 		if (branchAddress == null) {
 			if (other.branchAddress != null)
 				return false;

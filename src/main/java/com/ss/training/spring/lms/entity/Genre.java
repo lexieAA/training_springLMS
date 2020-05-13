@@ -29,7 +29,7 @@ public class Genre implements Serializable {
 	private String genreName;
 
 	@ManyToMany(mappedBy = "genres")
-	@JsonBackReference
+	@JsonBackReference(value="genres")
 	private List<Book> books;
 
 	public Long getGenreId() {

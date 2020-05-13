@@ -10,6 +10,7 @@ import com.ss.training.spring.lms.entity.Borrower;
 @Repository
 public interface BorrowerDAO extends JpaRepository<Borrower, Long> {
 
+//	List<Borrower> findByCardNo(Long cardNo);
 	List<Borrower> findByBorrowerName(String name);
 	
 }

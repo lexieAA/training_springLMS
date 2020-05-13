@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ss.training.spring.lms.entity.Author;
 import com.ss.training.spring.lms.entity.Book;
+import com.ss.training.spring.lms.entity.BookLoan;
+import com.ss.training.spring.lms.entity.BookLoansKey;
 import com.ss.training.spring.lms.entity.Borrower;
 import com.ss.training.spring.lms.entity.Genre;
 import com.ss.training.spring.lms.entity.LibraryBranch;
@@ -166,15 +168,16 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param authorId id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/authors/id/{authorId}")
 	public ResponseEntity<Integer> deleteAuthor(@PathVariable Long authorId) {
 
 		Integer returnInt = -1; // for determining HttpStatus
 
-		// create an object with an id and null name to indicate a delete in saveAuthor()
+		// create an object with an id and null name to indicate a delete in
+		// saveAuthor()
 		Author author = new Author();
 		author.setAuthorId(authorId);
 		author.setAuthorName(null);
@@ -322,15 +325,16 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param publisherId id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/publishers/id/{publisherId}")
 	public ResponseEntity<Integer> deletePublisher(@PathVariable Long publisherId) {
 
 		Integer returnInt = -1; // for determining HttpStatus
 
-		// create an object with an id and null name to indicate a delete in savePublisher()
+		// create an object with an id and null name to indicate a delete in
+		// savePublisher()
 		Publisher publisher = new Publisher();
 		publisher.setPublisherId(publisherId);
 		publisher.setPublisherName(null);
@@ -478,15 +482,16 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param cardNo id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/borrowers/cardno/{cardNo}")
 	public ResponseEntity<Integer> deleteBorrower(@PathVariable Long cardNo) {
 
 		Integer returnInt = -1; // for determining HttpStatus
 
-		// create an object with an id and null name to indicate a delete in saveBorrower()
+		// create an object with an id and null name to indicate a delete in
+		// saveBorrower()
 		Borrower borrower = new Borrower();
 		borrower.setCardNo(cardNo);
 		borrower.setBorrowerName(null);
@@ -634,8 +639,8 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param genreId id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/genres/id/{genreId}")
 	public ResponseEntity<Integer> deleteGenre(@PathVariable Long genreId) {
@@ -791,15 +796,16 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param branchId id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/branches/id/{branchId}")
 	public ResponseEntity<Integer> deleteLibaryBranch(@PathVariable Long branchId) {
 
 		Integer returnInt = -1; // for determining HttpStatus
 
-		// create an object with an id and null name to indicate a delete in saveLibaryBranch()
+		// create an object with an id and null name to indicate a delete in
+		// saveLibaryBranch()
 		LibraryBranch branch = new LibraryBranch();
 		branch.setBranchId(branchId);
 		branch.setBranchName(null);
@@ -947,8 +953,8 @@ public class AdminController {
 	 * This method handles delete requests for the specified id.
 	 * 
 	 * @param bookId id of object to delete
-	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating id to
-	 *         delete not found; OK (0) indicating successful deletion
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to delete not found; OK (0) indicating successful deletion
 	 */
 	@DeleteMapping(path = "/books/id/{bookId}")
 	public ResponseEntity<Integer> deleteBook(@PathVariable Long bookId) {
@@ -980,23 +986,34 @@ public class AdminController {
 	//
 	//
 
-//	@PutMapping(path = "/lms/admin/loans", consumes = { MediaType.APPLICATION_JSON_VALUE })
-//	public ResponseEntity<Integer> extendLoan(@RequestBody BookLoan loan) {
-//
-//		Integer returnInt = -1; // for determining HttpStatus
-//
-//		// call loan extension function and get response
-//		if (loan != null && loan.getBookId() != null && loan.getCardNo() != null && loan.getDueDate() != null) {
-//			returnInt = adminService.extendBookLoan(loan);
-//		}
-//
-//		// check returnInt to select proper HttpStatus to respond with
-//		if (returnInt == -1) {
-//			// there was a failure in the transaction, return a BAD_REQUEST status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
-//		} else {
-//			// success in creating a new record, return created status
-//			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
-//		}
-//	}
+	/**
+	 * This method takes an open loan and extends its due date by 7 days
+	 * 
+	 * @param loan book loan to extend due date by 7 days
+	 * @return BAD_REQUEST (-1) indicating query failure; NOT_FOUND (1) indicating
+	 *         id to extend not found; OK (0) indicating successful extension
+	 */
+	@PutMapping(path = "/loans", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Integer> extendLoan(@RequestBody BookLoansKey loan) {
+
+		Integer returnInt = -1; // for determining HttpStatus
+
+		// call loan extension function and get response
+		if (loan != null && loan.getBookId() != null && loan.getBranchId() != null && loan.getCardNo() != null
+				&& loan.getDateOut() != null) {
+			returnInt = adminService.extendBookLoan(loan);
+		}
+
+		// check returnInt to select proper HttpStatus to respond with
+		if (returnInt == -1) {
+			// there was a failure in the transaction, return a BAD_REQUEST status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.BAD_REQUEST);
+		} else if (returnInt == 1) {
+			// loan to extend not found
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.NOT_FOUND);
+		} else {
+			// success in extending record, return ok status
+			return new ResponseEntity<Integer>(returnInt, HttpStatus.OK);
+		}
+	}
 }

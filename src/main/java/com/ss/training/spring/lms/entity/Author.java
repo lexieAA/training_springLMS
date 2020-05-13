@@ -32,7 +32,7 @@ public class Author implements Serializable {
 	private String authorName;
 
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "authors")
-	@JsonBackReference
+	@JsonBackReference(value="author")
 	private List<Book> books;
 	
 	public Long getAuthorId() {
